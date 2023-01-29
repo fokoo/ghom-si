@@ -1,0 +1,58 @@
+<mat-divider style="margin-top: 3%; " ></mat-divider>
+  <div style="margin: 3%; ">
+
+    <div class="inner">
+      <div  [ngClass]="showLearn ? 'yes':'no'">
+        <button class="btn"  (click)="showDiv('learn')">
+          <label> Comment utiliser se site</label>
+          <mat-icon *ngIf="showLearn">expand_less</mat-icon>
+          <mat-icon *ngIf="!showLearn">expand_more</mat-icon>
+        </button>
+      <div *ngIf="showLearn">
+        <p matBadge="i" class="corner">
+          There are many way here to learn. In expression you can learn news expressions of daily basis.
+          In learn Ghɔmala', you have the choice between learning by topics or a general approch and
+          many exercises, test and Examinations. <br>
+          <strong> How to get the max of this website?</strong> ...
+        </p>
+      </div>
+    </div>
+
+     <div [ngClass]="showContact ? 'yes':'no'">
+      <button class="btn" (click)="showDiv('contact')">
+        <label>Contact</label>
+        <mat-icon *ngIf="showContact">expand_less</mat-icon>
+        <mat-icon *ngIf="!showContact">expand_more</mat-icon>
+      </button>
+      <div *ngIf="showContact" class="bgl">
+        <mat-list class="corner text" class="corner">
+          <mat-list-item><mat-icon>mail</mat-icon>fokofotso@gmail.com</mat-list-item>
+          <mat-list-item><mat-icon>chat_bubble_outline</mat-icon> 00237 6 71 44 74 32</mat-list-item>
+          <mat-list-item><mat-icon>paypal</mat-icon> Faire Don / Donate Paypal: ... </mat-list-item>
+        </mat-list>
+      </div>
+     </div>
+
+     <div [ngClass]="showAbout ? 'yes':'no'">
+      <button class="btn"  (click)="showDiv('about')">
+        <label>A propos</label>
+          <mat-icon *ngIf="showAbout">expand_less</mat-icon>
+          <mat-icon *ngIf="!showAbout">expand_more</mat-icon>
+      </button>
+      <div *ngIf="showAbout" class="bgl">
+        <p class="corner">
+        Ghɔ̀m, Və biŋ Ké Ghɔmala'.
+        We love african language and culture.
+  <!--        Notre but: Rentre l'apprentissage du Ghɔmala accessile et facil pour tous.-->
+        </p>
+      </div>
+    </div>
+  </div>
+
+    <!-- Copyright -->
+  <!--   <i id="copyright" class="footer-copyright">
+      © 2020 Copyright: <a href="https://ghomala.com/">Ghɔmala.com</a>
+    </i> -->
+  </div>
+
+

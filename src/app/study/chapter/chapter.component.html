@@ -1,0 +1,57 @@
+<div class="menu-top">
+   <div>
+    <mat-form-field>
+      <mat-select   placeholder="Choisir Chapître" [(value)]="selectedChapter">
+        <mat-option *ngFor="let sc of selectChapters" value="sc">
+          {{ sc }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field>
+        <mat-select   placeholder="Choisir Version" [(value)]="selectedVersion">
+          <mat-option *ngFor="let sv of selectedVersion" value="save">
+            {{ sv }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+       {{ chapterName }}
+    </div>
+    <div>
+      <button mat-raised-button (click)="compare = !compare">
+        Comparer
+      </button>
+
+    </div>
+</div>
+
+<div class="chapterNumber">
+   <button mat-button *ngFor="let item of chapterNumbers, let i = index"
+   (click)="onChapterChange(i)">{{ item }}</button>
+</div>
+
+<div class="middle">
+  <div class="text">
+   <div class="verse" *ngFor="let verse of chapter">
+     {{verse.ID + " " + verse.Text }}
+   </div>
+ </div>
+  <div  *ngIf="compare === true" class="text2">
+      <div class="verse" *ngFor="let verse of chapterOther">
+        {{verse.ID + " " + verse.Text }}
+      </div>
+  </div>
+ </div>
+
+<div class="menu-bottom">
+    <button mat-raised-button (click)="previous()">
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+    <button mat-raised-button (click)="next()">
+      <mat-icon>navigate_next</mat-icon>
+    </button>
+</div>
+

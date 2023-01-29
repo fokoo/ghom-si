@@ -1,0 +1,66 @@
+
+table {
+  background-color: white;
+  border-collapse: collapse;
+  width: 45%;
+  margin-bottom: 25px;
+}
+td {
+  padding: 5px;
+}
+tr {
+  margin-top: 2px;
+}
+.title {
+  background-color: rgb(248, 250, 248);
+  width: auto;
+}
+td:hover {
+  background-color: rgb(248, 248, 241);
+  padding: 7px;
+  font-size: large;
+}
+tr:nth-child(even) {
+  background-color: whitesmoke;
+}
+.testament {
+  display:flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: flex-start;
+  width: 100%;
+  border: 0.3px groove;
+  border-bottom: none;
+  border-top-color: lightgrey;
+}
+.text {
+   width: 150px;
+   height: 4px;
+   color: brown;
+}
+.btn {
+  float: right;
+  border: none;
+  background-color: transparent;
+  padding: 3px 10px;
+}
+
+@media screen and (max-width: 900px) {
+  table {
+    background-color: white;
+    border-collapse: collapse;
+    width: 90%;
+    margin-top: 15px;
+    margin-left: 5%;
+    margin-bottom: 25px;
+  }
+  .testament {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    border: 0.2px groove;
+    border-bottom: none;
+    border-top-color: lightgrey;
+  }
+}

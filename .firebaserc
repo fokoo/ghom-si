@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "lanye-ghomala": {
+      "hosting": {
+        "ghom-si": [
+          "ghom-si"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "lanye-ghomala"
+  }
+}

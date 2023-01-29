@@ -1,0 +1,103 @@
+.foot{
+  display: flex;
+  //flex-direction: column;
+  color: gray;
+  width: auto;
+  margin-bottom: 40px;
+  a {
+    margin-right: 40px;
+    margin-bottom: 40px;
+  }
+}
+
+#copyright{
+  font-size:12px;
+}
+
+.bgl {
+  background-color: inherit;
+  border: none;
+
+}
+.corner {
+  padding: 2%;
+  border-radius: 20px;
+}
+
+.text{
+  color: gray;
+}
+
+#contact:hover{
+  color: black;
+  font-weight: 300;
+  font-size:28px;
+}
+
+#facebook:hover{
+  color: blue;
+  font-weight: 300;
+  font-size:28px;
+}
+
+#youtube:hover{
+  color: red;
+  font-weight: 300;
+  font-size:28px;
+}
+
+
+#copyright{
+  font-size:12px;
+}
+
+.btn {
+  display: flex;
+  margin: 10px 10px 10px 10px;
+  width: auto;
+  background-color: inherit;
+  border: none;
+  font-size: large;
+  &:hover {
+    text-decoration:underline;
+    color: firebrick;
+  }
+}
+
+.btn mat-icon{
+  float: right;
+  align-items: center;
+}
+
+.btn label{
+  width: auto;;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: inherit;
+  margin: auto;
+}
+
+.yes {
+  background-color: whitesmoke;
+}
+
+.no {
+  background-color: inherit;
+}
+
+@media screen and (max-width: 400px) {
+  .foot{
+    display: flex;
+    flex-direction: column;
+    color: gray;
+    width: auto;
+    margin-bottom: 40px;
+    a {
+      margin-bottom: 50px;
+    }
+  }
+}

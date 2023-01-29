@@ -1,0 +1,66 @@
+.menu-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 5px 5%;
+}
+.chapterNumber {
+  flex-wrap: wrap;
+  flex-direction:row;
+  justify-content: space-between;
+  margin: 5px 5%;
+  color: gray;
+  background-color: white;
+  a {
+    margin: 2px;
+    :hover :active {
+      background-color: lightsalmon;
+      font-size: large;
+    }
+  }
+}
+
+.middle {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin: 10px 5%;
+  border: 0.5px groove;
+  border-color: maroon;
+  background-color: white;
+}
+.text2 {
+  width: 50%;
+  border-left: 0.5px groove;
+  border-left-color: maroon;
+}
+.verse {
+  font-size: large;
+}
+.menu {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin: 10px 5%;
+}
+.menu-bottom {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin: 10px 5%;
+}
+
+@media screen and (max-width: 600px) {
+  .menu-top {
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px 5%;
+  }
+  .menu {
+    flex-wrap: wrap;
+    flex-direction:row;
+    justify-content: space-between;
+    margin: 10px 5%;
+  }
+}

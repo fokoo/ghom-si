@@ -1,0 +1,34 @@
+ul {
+  list-style: none;
+}
+
+li {
+  display: inline-block;
+  margin-right: 25px;
+}
+
+mat-toolbar {
+  background-color: whitesmoke;
+}
+
+.active {
+ color: firebrick;
+ text-decoration: underline;
+}
+
+.login {
+  display: flex;
+  float: right;
+  margin-right: 5px;
+}
+
+@media screen and (max-width: 400px) {
+  ul {
+    // list-style: none;
+    margin-left: none;
+  }
+  li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+}

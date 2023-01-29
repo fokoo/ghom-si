@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "target": "ghom-si",
+    "public": "dist/ghom-si",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
