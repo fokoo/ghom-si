@@ -14,7 +14,6 @@ import {getStorage, provideStorage} from "@angular/fire/storage";
 import { environment } from 'src/environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
-import { VerseComponent } from './study/verse/verse.component';
 import { ChapterComponent } from './study/chapter/chapter.component';
 
 @NgModule({
@@ -24,7 +23,6 @@ import { ChapterComponent } from './study/chapter/chapter.component';
     EditionComponent,
     HeaderComponent,
     FooterComponent,
-    VerseComponent,
     ChapterComponent
   ],
   imports: [
