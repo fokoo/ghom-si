@@ -1,0 +1,35 @@
+<nav>
+  <mat-toolbar>
+    <ul>
+      <li><a routerLink='/lanye' [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active">
+        Lányə
+      </a></li>
+      <li><a routerLink='/traduire' routerLinkActive="active">Tútə</a></li>
+    </ul>
+
+  <div class="login">
+    <ng-container *ngIf="user$ | async as user; else loginButton">
+      <button mat-button [matMenuTriggerFor]="userMenu">
+        {{ user.username }}
+        <mat-icon>expand_more</mat-icon>
+      </button>
+    </ng-container>
+    <ng-template #loginButton>
+      <button class="sign" mat-button  color="inherit" routerLink="auth/login">
+        Login
+      </button>
+    </ng-template>
+  </div>
+
+   </mat-toolbar>
+  </nav>
+
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item routerLink="">
+      <mat-icon>account_circle</mat-icon>
+      Profile
+    </button>
+    <button mat-menu-item (click)=" onSignOut()">
+      Logout
+    </button>
+  </mat-menu>
