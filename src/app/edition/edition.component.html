@@ -1,60 +1,114 @@
-<div>
+
   <div class="menu-top">
     <div>
-     <mat-form-field>
-       <mat-select placeholder="Choisir Chapître" [(value)]="selectedChapter">
-         <mat-option *ngFor="let sc of selectChapters" value="sc">
-           {{ sc }}
-         </mat-option>
-       </mat-select>
-     </mat-form-field>
-     </div>
-     <div>
       <mat-form-field>
-        <mat-select placeholder="Choisir Version" [(value)]="selectedVersion">
-          <mat-option *ngFor="let sc of selectVersions" value="sc">
-            {{ sc }}
-          </mat-option>
+       <mat-label>Livre</mat-label>
+        <mat-select [(value)]="currentBookID" (selectionChange)="onBookSelection($event)">
+            <div *ngFor="let testament of bookNames let j = index">
+            <mat-option *ngFor="let sc of testament let i = index" [value]="i+j*39">
+             {{ sc }}
+             </mat-option>
+           </div>
         </mat-select>
       </mat-form-field>
       </div>
-     <div>
-       <button mat-raised-button (click)="compare = !compare">
+      <div>
+        <mat-form-field>
+         <mat-label>Version</mat-label>
+          <mat-select [(value)]="currentBibelVersion"
+          (selectionChange)="onBibleVersionsSelection($event)">
+            <mat-option *ngFor="let sv of bibleVersions" [value]="sv">
+              {{ sv }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="chNberOfBook">
+      <button *ngFor="let item of chapterNumbersOfBook"
+       (click)="onChapterChange(item)"
+       [ngClass]="currentChapterNumber === item ? 'btn-selected' : 'btn'">
+          {{ item }}
+      </button>
+    </div>
+
+  <div class="menu">
+    <p class="showBookChapter">
+     {{ bookChapterName }}
+    </p>
+
+    <button class="edit-save">
+      <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="saveText()">
+        Sauvegarder
+       <mat-icon>save</mat-icon>
+      </button>
+      <button *ngIf="isEditMode" mat-raised-button color="primary" (click)="edit()">
+        Éditer
+       <mat-icon>edit</mat-icon>
+      </button>
+   </button>
+
+    <button mat-raised-button (click)="compare = !compare">
          Comparer
-       </button>
-
-     </div>
+    </button>
  </div>
 
- <div class="chapterNumber">
-    <a mat-raised-button [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active"> 0 </a>
-    <a   mat-raised-button  routerLink="."  routerLinkActive="active"
-       *ngFor="let item of chapterNumbers, let i = index"
-      (click)="onChapterChange(i)">
-    {{ item }}
- </a>
+ <div class='middle'>
+  <table>
+    <tr
+       *ngFor="let verse of chapterOther let j = index">
+     <!-- <div  class="verse" *ngFor="let verse of chapterGhomala"> -->
+      <td  [ngClass]="compare && direction? 'text2 verse' : 'text verse'">
+        <span class="verseID">{{  verse.ID? verse.ID: 1  }}</span>
+       <p class="verseEdit" contenteditable="true">
+        {{ chapterOther[j].Text }}
+        <!-- use function/method -->
+      </p>
+      <app-keyboard *ngIf="showKeyboard"  [inputWords]="'...'"
+                  (outputWords)="onNewKeyboardWords($event)">
+      </app-keyboard>
+     </td>
+     <td  class="verse">
+          <p class="verseText"  *ngIf="compare === true">
+            <span class="verseID">{{ verse.ID? verse.ID: 1 }}</span>
+            {{ verse.Text }}
+             <!-- use function/method -->
+          </p>
+
+      </td>
+    </tr>
+   </table>
  </div>
 
-<div class="middle">
+
+<!-- <div class="middle">
  <div class="text">
-  <div class="verse" *ngFor="let verse of chapterGhomala">
+ ---  <div class="verse" *ngFor="let verse of chapterGhomala">
     {{verse.ID + " " + verse.Text }}
-  </div>
-</div>
+  </div> ---
+    <textarea [(ngModel)]="translatedText"
+              (ngModelChange)="updateTranslatedText()">{{translatedText}}
+    </textarea>
+ </div>
  <div  *ngIf="compare === true" class="text2">
      <div class="verse" *ngFor="let verse of chapter">
        {{verse.ID + " " + verse.Text }}
      </div>
  </div>
-</div>
+ </div> -->
  <div class="menu">
-  <button mat-raised-button color="warn" >
-    Sauvegarder
-    <mat-icon>save</mat-icon>
+  <button mat-raised-button color="primary"  (click)="showKeyboard = !showKeyboard">
+       <mat-icon class="mat-36">keyboard</mat-icon>
   </button>
-  <button mat-raised-button color="primary">
-    Éditer
-    <mat-icon>edit</mat-icon>
+  <button class="edit-save">
+     <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="saveText()">
+       Sauvegarder
+      <mat-icon>save</mat-icon>
+     </button>
+     <button *ngIf="isEditMode" mat-raised-button color="primary" (click)="edit()">
+       Éditer
+      <mat-icon>edit</mat-icon>
+     </button>
   </button>
   <button mat-raised-button >
     Télecharger
@@ -65,7 +119,7 @@
     <mat-icon>attach_file</mat-icon>
   </button>
 </div>
-</div>
+
 <div class="menu-bottom">
   <button mat-raised-button (click)="previous()">
     <mat-icon>navigate_before</mat-icon>

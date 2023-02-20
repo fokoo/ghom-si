@@ -1,0 +1,21 @@
+<div class="testament">
+  <table  *ngFor="let testamenName of bookNames$ | async let j = index;">
+    <caption class="title" *ngIf="j === 0">
+      <h3>Nouveau Testament</h3>
+    </caption>
+    <caption class="title"  *ngIf="j === 1">
+      <h3>Ancien Testament</h3>
+    </caption>
+    <tr *ngFor="let bookname of testamenName,  let i = index;">
+        <td class="text" (click)="onBookSelection(i+1+j*39)">
+            [{{i+1+j*39}}] {{"  "}} {{bookname}}
+        </td>
+        <td  class="btn" (click)="playAudio(i+1+j*39)">
+            <mat-icon>volume_up</mat-icon>
+        </td>
+        <td   class="btn" (click)="edit(i+1+j*39)" >
+            <mat-icon>edit</mat-icon>
+        </td>
+    </tr>
+  </table>
+</div>

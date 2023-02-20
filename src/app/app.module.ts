@@ -1,20 +1,29 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HotToastModule } from '@ngneat/hot-toast';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { environment } from 'src/environments/environment';
+import { MaterialModule } from './material.module';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { StudyComponent } from './study/study.component';
-import { EditionComponent } from './edition/edition.component';
-import { HeaderComponent } from './header/header.component';
-import { FooterComponent } from './footer/footer.component';
+//import {AngularFireModule} from "@angular/fire";
 import {initializeApp, provideFirebaseApp} from "@angular/fire/app";
 import {getFirestore, provideFirestore} from "@angular/fire/firestore";
 import {getAuth, provideAuth} from "@angular/fire/auth";
 import {getStorage, provideStorage} from "@angular/fire/storage";
-import { environment } from 'src/environments/environment';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from './material.module';
-import { ChapterComponent } from './study/chapter/chapter.component';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+import { StudyComponent } from './study/study.component';
+import { EditionComponent } from './edition/edition.component';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
+import { KeyboardComponent } from './keyboard/keyboard.component';
+import { HomeComponent } from './home/home.component';
+import { SigninComponent } from './signin/signin.component';
+
+
 
 @NgModule({
   declarations: [
@@ -23,17 +32,22 @@ import { ChapterComponent } from './study/chapter/chapter.component';
     EditionComponent,
     HeaderComponent,
     FooterComponent,
-    ChapterComponent
+    KeyboardComponent,
+    HomeComponent,
+    SigninComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    HotToastModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

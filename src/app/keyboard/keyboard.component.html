@@ -1,0 +1,99 @@
+<div  class="kb-global" *ngIf="showKb">
+
+  <div class="kb">
+  <div class="kb-btn"  *ngIf="showKb">
+  <div class="btn" *ngIf="showAbc && !isCapital">
+    <button mat-raised-button *ngFor="let l of abc" type="button"
+            (click)="addChar(l)">{{l}}</button>
+  </div>
+
+  <div class="btn" *ngIf="showAbc && isCapital">
+    <button mat-raised-button *ngFor="let l of abcCapital" type="button"
+            (click)="addChar(l)">{{l}}
+    </button>
+  </div>
+
+  <div  class="btn" *ngIf="showAbc && !isCapital">
+    <button mat-raised-button *ngFor="let l of abc2" type="button"
+            (click)="addChar(l)">{{l}}
+    </button>
+  </div>
+  <div class="btn" *ngIf="showAbc && isCapital">
+    <button mat-raised-button *ngFor="let l of abcCapital2" type="button"
+            (click)="addChar(l)">{{l}}
+    </button>
+  </div>
+
+  <div  class="btn" *ngIf="showNum">
+    <button mat-raised-button  *ngFor="let n of digits"
+             type="button" (click)="addChar(n)">{{n}}</button>
+  </div>
+
+  <div class="btn" *ngIf="showSpe && !isCapital">
+    <button mat-raised-button *ngFor="let l of speCar" type="button"
+            (click)="addChar(l)">{{l}}
+    </button>
+  </div>
+  <div class="btn" *ngIf="showSpe && isCapital">
+    <button mat-raised-button *ngFor="let l of speCarCap" type="button"
+            (click)="addChar(l)">{{l}}
+    </button>
+
+  </div>
+  <div class="btn">
+    <button  mat-raised-button *ngIf="typedWords"
+             (click)="removeChar(0)">
+            <span  alt="back">
+              <mat-icon>keyboard_backspace</mat-icon>
+            </span>
+    </button>
+    <button mat-raised-button *ngIf="showKb"
+            (click)="addChar(' ')">SPACE
+    </button>
+    <button mat-raised-button *ngIf="showKb"
+            (click)="shift('&#10;')">
+      <mat-icon alt="Shift">keyboard_return</mat-icon>
+    </button>
+    </div>
+
+</div>
+<div class="kb-menu">
+<!--  <button type="submit" class="btn btn-outline-warning mr-auto"
+          [ngClass]="showKb? 'btn-warning' : 'btn-outline-warning' "
+          style="align-items: stretch; color: gray">Translate</button>-->
+
+  <button mat-stroked-button
+       (click)="showAlphabet()">abc
+  </button>
+
+  <button mat-stroked-button (click)="showInCapital()">
+    <mat-icon>{{aBc === 'Upper' ? "arrow_upward":"arrow_downward"}}</mat-icon>
+  </button>
+
+  <button mat-stroked-button
+          (click)="showNumber()">123:</button>
+
+  <button mat-stroked-button
+          (click)="showKeySpeCar()">äɵæ</button>
+
+  <button mat-stroked-button *ngIf="typedWords"
+           (click)="normalyseSW()">
+    <mat-icon>autorenew</mat-icon>
+  </button>
+
+  <button mat-raised-button   color="warn"
+          (click)="showKeyboard()">
+            <span alt="Keyboard" >
+              <mat-icon>keyboard_hide</mat-icon>
+            </span>
+  </button>
+</div>
+ </div>
+</div>
+<button mat-raised-button  *ngIf="!showKb"
+        (click)="showKeyboard()">
+            <span alt="Keyboard" >
+              <mat-icon>keyboard"</mat-icon>
+            </span>
+</button>
+

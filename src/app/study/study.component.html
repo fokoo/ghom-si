@@ -1,25 +1,99 @@
+<div class="menu-top">
+  <div>
+   <mat-form-field>
+    <mat-label>Livre</mat-label>
+     <mat-select [(value)]="currentBookID" (selectionChange)="onBookSelection($event)">
+         <div *ngFor="let testament of bookNames let j = index">
+         <mat-option *ngFor="let sc of testament let i = index" [value]="i+j*39">
+          {{ sc }}
+          </mat-option>
+        </div>
+     </mat-select>
+   </mat-form-field>
+   </div>
 
-<div class="testament">
-  <table  *ngFor="let testamenName of bookNames$ | async let j = index;">
-    <caption class="title" *ngIf="j === 0">
-      <h3>Nouveau Testament</h3>
-    </caption>
-    <caption class="title"  *ngIf="j === 1">
-      <h3>Ancien Testament</h3>
-    </caption>
-    <tr *ngFor="let bookname of testamenName,  let i = index;">
-        <td class="text" (click)="onOpenChapter(i+1+j*39)">
-            [{{i+1+j*39}}] {{"  "}} {{bookname}}
-        </td>
-        <td  class="btn" (click)="playAudio(i+1+j*39)">
-            <mat-icon>volume_up</mat-icon>
-        </td>
-        <td   class="btn" (click)="edit(i+1+j*39)" >
-            <mat-icon>edit</mat-icon>
-        </td>
-    </tr>
-  </table>
+   <div>
+     <mat-form-field>
+      <mat-label>Version</mat-label>
+       <mat-select [(value)]="currentBibelVersion"
+       (selectionChange)="onBibleVersionsSelection($event)">
+         <mat-option *ngFor="let sv of bibleVersions" [value]="sv">
+           {{ sv }}
+         </mat-option>
+       </mat-select>
+     </mat-form-field>
+   </div>
+</div>
+<div class="chNberOfBook">
+  <button *ngFor="let item of chapterNumbersOfBook"
+   (click)="onChapterChange(item)"
+   [ngClass]="currentChapterNumber === item ? 'btn-selected' : 'btn'">
+      {{ item }}
+  </button>
+</div>
+<div class="menu">
+  <p  class="showBookChapter">
+     {{ bookChapterName }}
+  </p>
+  <button class="btn-icon" *ngIf="compare" (click)="direction = !direction">
+         <span *ngIf="direction">
+            <mat-icon class="mat-25">
+              view_agenda</mat-icon>
+         </span>
+         <span *ngIf="!direction">
+          <mat-icon class="mat-25" style="transform: rotate(90deg)">
+            view_agenda</mat-icon>
+        </span>
+  </button>
+  <button mat-raised-button (click)="compare = !compare">
+         Comparer
+  </button>
+</div>
+<div [ngClass]="direction? 'middle row' : 'middle column'">
+  <div [ngClass]="compare && direction? 'text2' : 'text'">
+   <!-- <div  class="verse" *ngFor="let verse of chapterGhomala"> -->
+    <div class="verse" *ngFor="let verse of chapterOther">
+     <p class="verseText">
+      <span class="verseID">{{  verse.ID  }}</span>
+      {{ defaultVerse }}
+    </p>
+   </div>
+ </div>
+  <div  *ngIf="compare === true" [ngClass]="direction? 'b-left' : 'b-top'">
+      <div class="verse" *ngFor="let verse of chapterOther">
+        <p class="verseText">
+          <span class="verseID">{{ verse.ID }}</span>
+          {{ verse.Text }}
+        </p>
+      </div>
+  </div>
+ </div>
+<!-- <div class="menu">
+  <div>
+    <button mat-raised-button (click)="compare = !compare">
+      Comparer
+    </button>
+  </div>
+
+</div> -->
+
+<div class="menu-bottom">
+    <button mat-raised-button (click)="previous()">
+      <mat-icon>navigate_before</mat-icon>
+    </button>
+    <button mat-raised-button (click)="next()">
+      <mat-icon>navigate_next</mat-icon>
+    </button>
 </div>
 
 
 <!-- *ngFor="let testamentName of bookNames$ | async  let i = index;" -->
+<!-- <app-menu *ngIf="bookNames$"
+  [bookNames]="bookNames$ | async"
+  [currentBookID] = currentBookID
+  [currentChapterNumber] =  currentChapterNumber
+  (selectedBookID) = "selectedBookID($event)"
+  (selectedChapterNumber) = "selectedChapterNumber($event)"
+  (selectedVersion) = "selectedVersion($event)">
+</app-menu>
+    [ngStyle]="{'color': j===0? 'brown':'rgb(244, 98, 8)'}" -->

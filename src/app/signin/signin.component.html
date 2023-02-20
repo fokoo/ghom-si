@@ -1,0 +1,26 @@
+<div>
+  <mat-card class="form-card" [formGroup]="signInForm">
+    <mat-card-title class="h2"> Sign In </mat-card-title>
+      <mat-form-field class="form-group" appearance="fill">
+        <mat-label for="username">Username</mat-label>
+        <input type="text" matInput formControlName="username">
+        <!-- <mat-error *ngIf="username?.errors?.['required']">
+          Email address is required
+        </mat-error> -->
+      </mat-form-field>
+      <mat-form-field class="form-group" appearance="fill">
+        <mat-label for="password">Password</mat-label>
+        <input type="password" matInput formControlName="password">
+        <mat-error *ngIf="password?.errors?.['required']">
+          Password is required
+        </mat-error>
+      </mat-form-field>
+      <mat-card-actions class="action-buttons">
+      <button mat-raised-button
+              type="submit"
+              [disabled]="signInForm.invalid"
+              (click)="onSubmit()">Login</button>
+      </mat-card-actions>
+  <!-- <small style="margin-top: 5px;" *ngIf="Message" >{{ Message }}</small> -->
+  </mat-card>
+</div>

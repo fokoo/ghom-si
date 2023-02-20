@@ -1,66 +1,134 @@
-
-table {
+.menu-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 5px 5%;
+}
+.chNberOfBook {
+  //flex-wrap: wrap;
+  flex-direction:row;
+  justify-content: space-between;
+  margin: 5px 5%;
+  color: gray;
   background-color: white;
-  border-collapse: collapse;
-  width: 45%;
-  margin-bottom: 25px;
-}
-td {
-  padding: 5px;
-}
-tr {
-  margin-top: 2px;
-}
-.title {
-  background-color: rgb(248, 250, 248);
-  width: auto;
-}
-td:hover {
-  background-color: rgb(248, 248, 241);
-  padding: 7px;
-  font-size: large;
-}
-tr:nth-child(even) {
-  background-color: whitesmoke;
-}
-.testament {
-  display:flex;
-  flex-wrap: nowrap;
-  justify-content: space-around;
-  align-items: flex-start;
-  width: 100%;
-  border: 0.3px groove;
-  border-bottom: none;
-  border-top-color: lightgrey;
-}
-.text {
-   width: 150px;
-   height: 4px;
-   color: brown;
 }
 .btn {
-  float: right;
+  margin: 2px;
+  padding: 5px;
   border: none;
+  color: gray;
+  font-size: large;
+}
+.btn-selected, .btn:hover {
+  margin: 2px;
+  padding: 6px;
+  background-color: lightyellow;
+  color: maroon;
+  border: none;
+  font-size: large
+}
+//[ngClass]="currentChapterNumber === item ? 'selectedbtn' : 'btn'"
+.showBookChapter {
+  color: brown;
+  font-size: large;
+}
+.middle {
+  display: flex;
+  //flex-direction:row;
+  //justify-content: space-between;
+  margin: 10px 5%;
+  //border: 0.5px groove;
+  //border-color: maroon;
+  //background-color: white;
+}
+.text {
+  //width: 50%;
   background-color: transparent;
-  padding: 3px 10px;
+// border-bottom-color: maroon;
+}
+.text2 {
+  width: 50%;
+  //margin-left: 3px;
+  //border-left-color: maroon;
+}
+.b-left {
+  border-left: 0.5px groove;
+  border-left-color: maroon;
+  margin-left: 7px;
+  padding-left: 8px;
+  width: 50%;
+}
+.b-top {
+  border-top: 1px groove;
+  border-top-color: maroon;
+  margin-top: 13px;
+  padding-top: 18px;
+}
+.row {
+  flex-direction:row;
+}
+.column {
+  flex-direction:column;
+}
+.verseID {
+  color: brown;
+  padding-right: 7px;
+  margin-left: 4px;
+}
+.verseText {
+  color: rgb(19, 18, 18);
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+.btn-icon {
+   background-color: white;
+   border: none;
+   padding: 0%;
+}
+.verse {
+  font-size: large;
+  margin: 5px 2px;
+}
+.menu {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin: 10px 5%;
+  padding: 15px 0%;
+}
+.menu-bottom {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;
+  margin: 10px 5%;
+}
+@media screen and (max-width: 600px) {
+  .menu-top {
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px 5%;
+  }
+  .menu {
+    flex-wrap: wrap;
+    flex-direction:row;
+    justify-content: space-between;
+    margin: 10px 5%;
+  }
+  .btn {
+    margin: 1px;
+    padding: 3px;
+    border: none;
+    color: gray;
+    font-size: large;
+  }
+  .btn-selected {
+    margin: 1px;
+    padding: 4px;
+    background-color: lightyellow;
+    color: maroon;
+    border: none;
+    font-size: large
+  }
 }
 
-@media screen and (max-width: 900px) {
-  table {
-    background-color: white;
-    border-collapse: collapse;
-    width: 90%;
-    margin-top: 15px;
-    margin-left: 5%;
-    margin-bottom: 25px;
-  }
-  .testament {
-    display:flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    border: 0.2px groove;
-    border-bottom: none;
-    border-top-color: lightgrey;
-  }
-}
+

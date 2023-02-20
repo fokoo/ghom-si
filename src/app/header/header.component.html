@@ -1,30 +1,46 @@
-<nav>
+<!-- <nav> -->
   <mat-toolbar>
-    <ul>
-      <li><a routerLink='/lanye' [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active">
-        Lányə
-      </a></li>
-      <li><a routerLink='/traduire' routerLinkActive="active">Tútə</a></li>
-    </ul>
+    <a class="logo-big" routerLink="" routerLinkActive="active">
+      <img src="assets/logos/big.png" height="40" alt="Lanyə" >
+    </a>
+    <!-- <ul> -->
+      <!-- <li> -->
+        <a routerLink="" routerLinkActive="active">
+        <!-- <img src="assets/logos/big.png" height="40" alt="Lanyə">  Ghɔm SÎ -->
+        <mat-icon>home</mat-icon>
+        </a>
+      <!-- </li> -->
+      <!-- <li> -->
+         <a routerLink='lanye' [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active">
+           Lányə
+         </a>
+      <!-- </li> -->
+      <!-- <li> -->
+        <a routerLink='traduire' routerLinkActive="active">Tútə</a>
+      <!-- </li> -->
+    <!-- </ul> -->
 
   <div class="login">
-    <ng-container *ngIf="user$ | async as user; else loginButton">
+   <!--  <ng-container *ngIf="user$ | async as user; else loginButton">
       <button mat-button [matMenuTriggerFor]="userMenu">
         {{ user.username }}
         <mat-icon>expand_more</mat-icon>
       </button>
-    </ng-container>
-    <ng-template #loginButton>
-      <button class="sign" mat-button  color="inherit" routerLink="auth/login">
+    </ng-container> -->
+
+      <button  *ngIf="!isLogged" class="sign" mat-button  color="inherit" routerLink="login">
         Login
       </button>
-    </ng-template>
+      <button *ngIf="isLogged"  class="sign" mat-button  color="inherit" routerLink=""
+       (click)="onSignOut()">
+        Logout
+      </button>
   </div>
 
    </mat-toolbar>
-  </nav>
+ <!-- </nav> -->
 
-  <mat-menu #userMenu="matMenu">
+<!--   <mat-menu #userMenu="matMenu">
     <button mat-menu-item routerLink="">
       <mat-icon>account_circle</mat-icon>
       Profile
@@ -32,4 +48,4 @@
     <button mat-menu-item (click)=" onSignOut()">
       Logout
     </button>
-  </mat-menu>
+  </mat-menu> -->

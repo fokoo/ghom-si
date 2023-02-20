@@ -1,0 +1,127 @@
+.kb-global {
+  width: 99%;
+  min-height: auto;
+  margin: 1%;
+  padding: 3px;
+  border: 1px solid lightgrey;
+}
+.kb-text {
+  border: none;
+  font-size: medium;
+  width: 100%;
+  height: 50%;
+  position: relative;
+}
+textarea {
+  border: 0.3px solid lightgrey;
+  width: 99%;
+  // height: 99%;
+  max-height: 100%;
+  font-size: large;
+}
+.clear-btn {
+  position: absolute;
+  bottom: 3px;
+  right: 0;
+  background-color: transparent;
+  width: auto;
+  height: auto;
+  border: none;
+}
+.kb {
+  border: 0.3px solid lightgrey;
+  width: 100%;
+  height: 100%;
+}
+.kb-btn {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.btn {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+button {
+  margin: 2px;
+  padding: 2%;
+  font-size: large;
+  width: auto;
+  height: auto;
+  align-items: center;
+  justify-content: center;
+}
+ .kb-menu {
+   display: flex;
+   flex-wrap: wrap;
+   border: none;
+   display: flex;
+   justify-content: space-between;
+ }
+
+/*.textarea-container {
+  position: relative;
+}
+.textarea-container textarea {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+.textarea-container button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.Keyboard{
+  background-color: transparent
+}
+
+::placeholder{
+  color: antiquewhite;
+}
+!*.btnColor:hover{
+  background-color: gold;
+  font-weight: 200;
+  font-size:20px;
+}*!
+fa-icon{
+  color: gray;
+}
+
+!*
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  border-radius: 35px;
+  font-size: 24px;
+  line-height: 1.33;
+}
+*!
+.hv {
+  border-radius: 50%;
+}
+
+.hv:hover{
+  font-size: 21px;
+  color: gold;
+}
+
+.adv{
+  color: grey;
+}
+
+.hide {
+  display: none;
+}*/
+
+/*.adv:hover + .hide {
+  color: grey;
+  size: 9em;
+}*/

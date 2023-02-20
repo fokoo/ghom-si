@@ -2,52 +2,116 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 5px 5%;
+  margin: 5px 4%;
 }
-.chapterNumber {
-  flex-wrap: wrap;
+.chNberOfBook {
+  //flex-wrap: wrap;
   flex-direction:row;
   justify-content: space-between;
-  margin: 5px 5%;
+  margin: 5px 4%;
   color: gray;
   background-color: white;
-  a {
-    margin: 2px;
-    :hover :active {
-      background-color: lightsalmon;
-      font-size: large;
-    }
-  }
 }
-
+.btn {
+  margin: 2px;
+  padding: 5px;
+  border: none;
+  color: gray;
+  font-size: large;
+}
+.btn-selected, .btn:hover {
+  margin: 2px;
+  padding: 6px;
+  background-color: lightyellow;
+  color: maroon;
+  border: none;
+  font-size: large
+}
+//[ngClass]="currentChapterNumber === item ? 'selectedbtn' : 'btn'"
+.showBookChapter {
+  color: brown;
+  font-size: large;
+}
 .middle {
   display: flex;
-  flex-direction:row;
-  justify-content: space-between;
-  margin: 10px 5%;
-  border: 0.5px groove;
-  border-color: maroon;
+  //flex-direction:row;
+  //justify-content: space-between;
+  margin: 10px 4%;
+  //border: 0.5px groove;
+  //border-color: maroon;
+  //background-color: white;
+}
+.text {
+  //width: 50%;
   background-color: white;
+// border-bottom-color: maroon;
 }
 .text2 {
   width: 50%;
+  background-color: white;
+  //border-left-color: maroon;
+}
+div.editable {
+  width: 300px;
+  height: 200px;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+.b-left {
   border-left: 0.5px groove;
   border-left-color: maroon;
+  margin-left: 7px;
+  padding-left: 8px;
+  width: 50%;
+}
+.b-top {
+  border-top: 1px groove;
+  border-top-color: maroon;
+  margin-top: 13px;
+  padding-top: 18px;
+}
+.row {
+  flex-direction:row;
+}
+.column {
+  flex-direction:column;
+}
+.verseID {
+  color: brown;
+  padding-right: 7px;
+  margin-left: 4px;
+}
+.verseText {
+  color: rgb(19, 18, 18);
+  font-family: "Lucida Console", "Courier New", monospace;
+}
+.verseEdit {
+  color: rgb(19, 18, 18);
+  font-family: "Lucida Console", "Courier New", monospace;
+  height: 80%;
 }
 .verse {
   font-size: large;
+  margin: 5px 2px;
+  border-bottom-color: rgb(254, 248, 248);
+
 }
 .menu {
   display: flex;
   flex-direction:row;
   justify-content: space-between;
-  margin: 10px 5%;
+  margin: 10px 4%;
+  padding: 15px 0%;
 }
 .menu-bottom {
   display: flex;
   flex-direction:row;
   justify-content: space-between;
-  margin: 10px 5%;
+  margin: 10px 4%;
+}
+.edit-save {
+  background-color: transparent;
+  border: none;
 }
 
 @media screen and (max-width: 600px) {
@@ -55,12 +119,29 @@
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
-    margin: 5px 5%;
+    margin: 5px 4%;
   }
   .menu {
     flex-wrap: wrap;
     flex-direction:row;
     justify-content: space-between;
-    margin: 10px 5%;
+    margin: 10px 4%;
+  }
+  .btn {
+    margin: 1px;
+    padding: 3px;
+    border: none;
+    color: gray;
+    font-size: large;
+  }
+  .btn-selected {
+    margin: 1px;
+    padding: 4px;
+    background-color: lightyellow;
+    color: maroon;
+    border: none;
+    font-size: large
   }
 }
+
+
