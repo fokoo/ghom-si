@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { VerseGhomala } from '../models/verse-ghomala.model';
+import { ChapterGhomala } from '../models/chapter-ghomala.model';
 import { Verse } from '../models/verse.model';
 import { ApiService } from '../services/api.service';
 import { LocalService } from '../services/local.service';
@@ -11,7 +11,8 @@ import { SharedService } from '../services/shared.service';
   templateUrl: './edition.component.html',
   styleUrls: ['./edition.component.scss']
 })
-export class EditionComponent {
+export class EditionComponent implements OnInit, OnDestroy {
+
   rowTextarea: any;
 
   bookNames!: any[][];
@@ -26,19 +27,21 @@ export class EditionComponent {
   bibleVersions!: string[];
   compare!: boolean;
   chapterNumbersOfBook!: number[];
-  chapterGhomala!: VerseGhomala[];
+  chapterGhomala!: ChapterGhomala;
   chapterOther!: Verse[];
   direction: boolean = true;
   defaultVerse = "Aucune traduction de ce Versé disponible";
   isEditMode = true;
   translatedText!: string[];
-showKeyboard: any;
+  showKeyboard: any;
+  saveChapterGhomala!: ChapterGhomala;
 
   constructor(
     private localSevice: LocalService,
     private apiSevice: ApiService,
     //private router: Router,
     private sharedService: SharedService) { }
+
 
   ngOnInit(): void {
     this.initValues();
@@ -70,13 +73,19 @@ showKeyboard: any;
     );
   }
 
-
   getCurrentChapter() {
-    this.apiSevice.getChapterGhomala(this.currentBookID, this.currentChapterNumber).subscribe(
+    const edit = localStorage.getItem('editMode');
+    if (edit === 'true') {
+      this.initLocale(JSON.parse(edit!));
+      this.saveChapterGhomala = this.chapterGhomala;
+    } else {
+      this.apiSevice.getChapterGhomalaFb(this.currentBookID, this.currentChapterNumber).subscribe(
       data => {
-        this.chapterGhomala = data;
+        this.chapterGhomala = data ? data : new ChapterGhomala();
+        this.saveChapterGhomala = this.chapterGhomala;
       }
-    );
+      );
+    }
     console.log('getCurrentChapter called with bookID: ' + this.currentBookID + ' and version: ' + this.currentBibelVersion);
     this.localSevice.getChapter(this.currentBookID, this.currentBibelVersion)
     .subscribe(
@@ -111,10 +120,10 @@ showKeyboard: any;
   }
 
   setCurrentChapterNumber(ccn?: number) {
-    if (!this.currentBookID) {
+   /*  if (!this.currentBookID) {
       this.currentChapterNumber = 1;
       return;
-    }
+    } */
     if (ccn) {
       this.currentChapterNumber = ccn;
       localStorage.setItem('lastChapNber', ccn.toString());
@@ -228,11 +237,6 @@ showKeyboard: any;
     this.getCurrentChapter();
   }
 
-  onNewKeyboardWords (typedWords: string) {
-    console.log("onNewWords() called");
-    console.log(typedWords);
-  }
-
   updateTranslatedText() {
     throw new Error('Method not implemented.');
   }
@@ -240,7 +244,70 @@ showKeyboard: any;
   edit() {
     this.isEditMode = !this.isEditMode;
   }
-  saveText() {
+
+  saveChapter() {
+    console.log("saveChapter() called");
     this.isEditMode = !this.isEditMode;
+    // todo confimation before sent to api
+    this.chapterGhomala.BookID = this.currentBookID;
+    this.chapterGhomala.ChapterID = this.currentChapterNumber;
+    this.chapterGhomala.Verses = [];
+    this.chapterGhomala.BookName = "book-name";
+    for(let i = 0; i < this.chapterOther.length; i++) {
+      this.chapterGhomala.Verses[i] = this.chapterOther[i];
+      //this.chapterGhomala.Verses[i].Text =  this.chapterOther[i].Text;
+      //this.chapterGhomala.Verses[i].ID   =  this.chapterOther[i].ID;
+    }
+    this.apiSevice.addChapterGhomalaFb(this.chapterGhomala);
   }
+
+  onNewKeyboardWords(typedWords: string, i: number) {
+    console.log("onNewWords() called");
+    console.log(typedWords);
+    this.chapterOther[i].Text = typedWords;
+  }
+
+  onVerseTextChange(val: any, i: any) {
+    if (!this.showKeyboard) {
+      this.chapterOther[i].Text = <string> ((val as HTMLElement).innerHTML);
+    }
+    console.log("Changed", val)
+    console.log("Changed i", 1)
+  }
+
+  compareBtn() {
+    this.compare = !this.compare;
+    this.getCurrentChapter();  // todo to getcurrentchapter and replace by re-init chapterGhomala,
+                               //while taking the changes under consideration
+  }
+
+  ngOnDestroy(): void {
+    if (this.isEditMode) {
+      localStorage.setItem('chapterGhomala', JSON.stringify(this.chapterGhomala));
+      localStorage.setItem("isEditMode", this.isEditMode.toString());
+
+      localStorage.setItem('lastBookID', this.currentBookID.toString());
+      localStorage.setItem('lastChapNber', this.currentChapterNumber.toString());
+      localStorage.setItem('lastVersion', this.currentBibelVersion.toString());
+    } else {
+      localStorage.removeItem("chapterGhomala");
+      localStorage.removeItem("isEditMode");
+    }
+  }
+
+  resetChapter() {
+    this.isEditMode = !this.isEditMode;
+    this.chapterGhomala = this.saveChapterGhomala;
+  }
+
+  initLocale (editMode: boolean): void {
+    if (editMode) {
+      this.chapterGhomala = JSON.parse(localStorage.getItem('chapterGhomala')!);
+      this.isEditMode = editMode;
+      localStorage.removeItem("chapterGhomala");
+      localStorage.removeItem("isEditMode");
+    }
+  }
+
+
 }

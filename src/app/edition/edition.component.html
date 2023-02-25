@@ -1,5 +1,4 @@
-
-  <div class="menu-top">
+ <div class="menu-top">
     <div>
       <mat-form-field>
        <mat-label>Livre</mat-label>
@@ -38,8 +37,8 @@
     </p>
 
     <button class="edit-save">
-      <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="saveText()">
-        Sauvegarder
+      <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="resetChapter()">
+        Rétablir
        <mat-icon>save</mat-icon>
       </button>
       <button *ngIf="isEditMode" mat-raised-button color="primary" (click)="edit()">
@@ -48,7 +47,7 @@
       </button>
    </button>
 
-    <button mat-raised-button (click)="compare = !compare">
+    <button mat-raised-button (click)="compareBtn()">
          Comparer
     </button>
  </div>
@@ -56,25 +55,31 @@
  <div class='middle'>
   <table>
     <tr
-       *ngFor="let verse of chapterOther let j = index">
+       *ngFor="let verse of chapterGhomala.Verses let j = index">
      <!-- <div  class="verse" *ngFor="let verse of chapterGhomala"> -->
-      <td  [ngClass]="compare && direction? 'text2 verse' : 'text verse'">
-        <span class="verseID">{{  verse.ID? verse.ID: 1  }}</span>
-       <p class="verseEdit" contenteditable="true">
-        {{ chapterOther[j].Text }}
-        <!-- use function/method -->
-      </p>
-      <app-keyboard *ngIf="showKeyboard"  [inputWords]="'...'"
-                  (outputWords)="onNewKeyboardWords($event)">
+      <td  [ngClass]="compare? 'text2' : 'text'">
+      <mat-form-field  class="mform" appearance="fill">
+        <mat-label class="verseID">{{  verse.ID  }}</mat-label>
+        <textarea matInput
+        cdkTextareaAutosize
+        [(ngModel)]="verse.Text"
+         class="verseEdit"
+         [readonly]="isEditMode">
+          {{ verse.Text }}
+        </textarea>
+      </mat-form-field>
+       <app-keyboard *ngIf="showKeyboard"
+                  [inputWords] = "chapterOther[j].Text"
+                  (outputWords)= "onNewKeyboardWords($event, j)">
       </app-keyboard>
      </td>
-     <td  class="verse">
+
+     <td class="verse">
           <p class="verseText"  *ngIf="compare === true">
-            <span class="verseID">{{ verse.ID? verse.ID: 1 }}</span>
-            {{ verse.Text }}
+            <span class="verseID">{{ chapterOther[j].ID? chapterOther[j].ID: 1 }}</span>
+            {{ chapterOther[j].Text }}
              <!-- use function/method -->
           </p>
-
       </td>
     </tr>
    </table>
@@ -101,8 +106,8 @@
        <mat-icon class="mat-36">keyboard</mat-icon>
   </button>
   <button class="edit-save">
-     <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="saveText()">
-       Sauvegarder
+     <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="saveChapter()">
+       Envoyer
       <mat-icon>save</mat-icon>
      </button>
      <button *ngIf="isEditMode" mat-raised-button color="primary" (click)="edit()">

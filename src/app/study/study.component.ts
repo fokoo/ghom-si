@@ -96,10 +96,10 @@ export class StudyComponent implements OnInit {
       }
       this.currentBookID = cbn;
       this.setCurrentChapterNumber(1);
-      localStorage.setItem('lastBookID', cbn.toString());
+      localStorage.setItem('lastBookID_study', cbn.toString());
       return;
     }
-    const bn = localStorage.getItem('lastBookID');
+    const bn = localStorage.getItem('lastBookID_study');
     if (bn && bn !== null) {
       this.currentBookID = +bn;
     } else {
@@ -114,11 +114,11 @@ export class StudyComponent implements OnInit {
     }
     if (ccn) {
       this.currentChapterNumber = ccn;
-      localStorage.setItem('lastChapNber', ccn.toString());
+      localStorage.setItem('lastChapNber_study', ccn.toString());
       console.log("set currentChapterNumber called: " + ccn.toString());
       return;
     }
-    const cn = localStorage.getItem('lastChapNber');
+    const cn = localStorage.getItem('lastChapNber_study');
     if (cn && cn !== null) {
       this.currentChapterNumber = +cn;
       console.log("set currentChapterNumber called: " + cn);
@@ -131,9 +131,9 @@ export class StudyComponent implements OnInit {
     if(curBibelVersion){
       this.currentBibelVersion = curBibelVersion;
       this.onBookSelection(this.currentBookID, curBibelVersion);
-      localStorage.setItem('lastVersion', curBibelVersion);
+      localStorage.setItem('lastVersion_study', curBibelVersion);
     } else {
-      const cbv = localStorage.getItem('lastVersion');
+      const cbv = localStorage.getItem('lastVersion_study');
       if (cbv && cbv !== null) {
         this.currentBibelVersion = cbv;
       } else if(this.bibleVersions) {
