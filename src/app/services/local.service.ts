@@ -12,6 +12,7 @@ import { Verse } from '../models/verse.model';
 import { S21 } from '../data/s21';
 import { MARTIN } from '../data/martin';
 import { SEMEUR } from '../data/semeur';
+import { KGV } from '../data/kgv';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,8 @@ numbersOfChapterOfBook!: number;
        testaments = SEMEUR.bible;
     } else if (version == "MARTIN") {
        testaments = MARTIN.bible;
+    } else if (version == "KGV") {
+        testaments = KGV.bible;
     } else {
        testaments = LSG.bible.Testaments;
     }

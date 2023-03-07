@@ -7,14 +7,14 @@
       <h3>Ancien Testament</h3>
     </caption>
     <tr *ngFor="let bookname of testamenName,  let i = index;">
-        <td class="text" (click)="onBookSelection(i+1+j*39)">
+        <td class="text" (click)="onBookSelection(i+j*38)">
             [{{i+1+j*39}}] {{"  "}} {{bookname}}
         </td>
-        <td  class="btn" (click)="playAudio(i+1+j*39)">
-            <mat-icon>volume_up</mat-icon>
+        <td  (click)="playAudio(i+j*38)">
+            <mat-icon class="btn">volume_up</mat-icon>
         </td>
-        <td   class="btn" (click)="edit(i+1+j*39)" >
-            <mat-icon>edit</mat-icon>
+        <td   (click)="edit(i+j*38)" >
+            <mat-icon class="btn color">edit</mat-icon>
         </td>
     </tr>
   </table>

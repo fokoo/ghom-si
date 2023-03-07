@@ -4,8 +4,8 @@
        <mat-label>Livre</mat-label>
         <mat-select [(value)]="currentBookID" (selectionChange)="onBookSelection($event)">
             <div *ngFor="let testament of bookNames let j = index">
-            <mat-option *ngFor="let sc of testament let i = index" [value]="i+j*39">
-             {{ sc }}
+             <mat-option *ngFor="let sc of testament let i = index" [value]="i+j*39">
+              {{ sc }}
              </mat-option>
            </div>
         </mat-select>
@@ -32,9 +32,11 @@
     </div>
 
   <div class="menu">
-    <p class="showBookChapter">
-     {{ bookChapterName }}
-    </p>
+    <button class="showBookChapter"  (click)="playAudio()">
+      <p> {{ bookName }} </p>
+      <p style="color: rgb(121, 119, 119); margin-left: 6px;"> {{ chapterName }} </p>
+      <mat-icon class="play" >volume_up</mat-icon>
+    </button>
 
     <button class="edit-save">
       <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="resetChapter()">
@@ -52,7 +54,7 @@
     </button>
  </div>
 
- <div class='middle'>
+ <div class='middle' *ngIf="this.chapterGhomala">
   <table>
     <tr
        *ngFor="let verse of chapterGhomala.Verses let j = index">

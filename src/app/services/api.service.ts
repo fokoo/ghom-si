@@ -58,13 +58,13 @@ private chapter (bookID: number) : any[] {   // temporary until method done
   return verses;
 }
 
-getChapterGhomala(bookID: number, chapterID: number): Observable<any> {
+getChapterGhomala(bookID: number, chapterID: number, version: number): Observable<any> {
   return of(this.chapter(bookID));
 }
 
-getChapterGhomalaFb(bookID: number, chapterID: number): Observable<any> {
-  const DB_UID = "bookID_" + bookID + "_ChapterID_" + chapterID;
-  const ref = doc(this.db, 'GhomSi', DB_UID);
+getChapterGhomalaFb(bookID: number, chapterID: number, version: number): Observable<any> {
+  const DB_UID = "Book_" + bookID + "_Chapter_" + chapterID;
+  const ref = doc(this.db, 'GhomSi'+version, DB_UID);
   return docData(ref) as Observable<ChapterGhomala>;
   /*
   return  this.currentUser$.pipe(
@@ -80,29 +80,29 @@ getChapterGhomalaFb(bookID: number, chapterID: number): Observable<any> {
   */
 }
 
-addChapterGhomalaFb(chapter: ChapterGhomala): Observable<void> {
+addChapterGhomalaFb(chapter: ChapterGhomala, version: number): Observable<void> {
 console.log("addChapterGhomalaFb called");
 if(!chapter === undefined) {
   return of(void 0);
 }
-chapter.DB_UID = "bookID_" + chapter.BookID + "_ChapterID_" + chapter.ChapterID;
+chapter.DB_UID = "Book_" + chapter.BookID + "_Chapter_" + chapter.ChapterID;
 //const userFormModel: UserForm = Object.assign(userForm);
 console.log("uid in ChapterGhomala: " + chapter.DB_UID);
-const ref = doc(this.db, 'GhomSi', chapter.DB_UID);
+const ref = doc(this.db, 'GhomSi'+version, chapter.DB_UID);
 return from(setDoc(ref, { ...chapter }));
 }
 
-updateChapterGhomalaFb( chapter: ChapterGhomala ): Observable<void> {
+updateChapterGhomalaFb( chapter: ChapterGhomala, version: number): Observable<void> {
   console.log("addChapterGhomalaFb called");
   if(!chapter === undefined) {
     return of(void 0);
   }
-  const ref = doc(this.db, 'GhomSi', chapter.DB_UID!);
+  const ref = doc(this.db, 'GhomSi'+version, chapter.DB_UID!);
   return from(updateDoc(ref, { ...chapter }));
 }
 
-deleteUserFb(chapterDB_UID: string): Observable<void> {
-   const ref = doc(this.db, 'GhomSi', chapterDB_UID!);
+deleteUserFb(chapterDB_UID: string, version: number): Observable<void> {
+   const ref = doc(this.db, 'GhomSi'+version, chapterDB_UID!);
    return from(deleteDoc(ref));
 }
 

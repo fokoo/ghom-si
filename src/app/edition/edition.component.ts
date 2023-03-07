@@ -13,8 +13,6 @@ import { SharedService } from '../services/shared.service';
 })
 export class EditionComponent implements OnInit, OnDestroy {
 
-  rowTextarea: any;
-
   bookNames!: any[][];
   //bookNames$!: Observable<any>;
   private currentBookName!: string;
@@ -23,6 +21,8 @@ export class EditionComponent implements OnInit, OnDestroy {
   currentBookID!: number;
   currentBibelVersion!: string;
   bookChapterName!: string;
+  bookName!: string;
+  chapterName!: string;
   //bibleVersions$!: Observable<any>;
   bibleVersions!: string[];
   compare!: boolean;
@@ -35,6 +35,7 @@ export class EditionComponent implements OnInit, OnDestroy {
   translatedText!: string[];
   showKeyboard: any;
   saveChapterGhomala!: ChapterGhomala;
+  versionGhomala = 1;
 
   constructor(
     private localSevice: LocalService,
@@ -79,7 +80,7 @@ export class EditionComponent implements OnInit, OnDestroy {
       this.initLocale(JSON.parse(edit!));
       this.saveChapterGhomala = this.chapterGhomala;
     } else {
-      this.apiSevice.getChapterGhomalaFb(this.currentBookID, this.currentChapterNumber).subscribe(
+      this.apiSevice.getChapterGhomalaFb(this.currentBookID, this.currentChapterNumber,this.versionGhomala).subscribe(
       data => {
         this.chapterGhomala = data ? data : new ChapterGhomala();
         this.saveChapterGhomala = this.chapterGhomala;
@@ -104,7 +105,7 @@ export class EditionComponent implements OnInit, OnDestroy {
   setCurrentBookID(cbn?: number) {
     if (cbn) {
       if (cbn > 65) {
-        cbn = 1;
+        cbn = 0;
       }
       this.currentBookID = cbn;
       this.setCurrentChapterNumber(1);
@@ -112,19 +113,19 @@ export class EditionComponent implements OnInit, OnDestroy {
       return;
     }
     const bn = localStorage.getItem('lastBookID');
-    if (bn && bn !== null) {
+    if (bn !== undefined && bn !== null) {
       this.currentBookID = +bn;
     } else {
-      this.currentBookID = 1;
+      this.currentBookID = 0;
     }
   }
 
   setCurrentChapterNumber(ccn?: number) {
-   /*  if (!this.currentBookID) {
+    if (this.currentBookID === undefined) {
       this.currentChapterNumber = 1;
       return;
-    } */
-    if (ccn) {
+    }
+    if (ccn !== undefined && ccn !== null) {
       this.currentChapterNumber = ccn;
       localStorage.setItem('lastChapNber', ccn.toString());
       console.log("set currentChapterNumber called: " + ccn.toString());
@@ -159,29 +160,33 @@ export class EditionComponent implements OnInit, OnDestroy {
     if (!this.bookNames) {
       throw new Error("No book names");
     }
-    if (bookName && nber) {
-      this.bookChapterName = bookName + " Chap. " + nber;
+    if (bookName && nber !== undefined && nber !== null) {
+      this.bookName = bookName.split('(').at(0) + ' ';
+      this.chapterName = " Chap. " + nber;
+      //this.bookChapterName = bookName.split('(').at(0) + " Chap. " + nber;
     } else if (bookName) {
-      this.bookChapterName = bookName + " Chap. " + 1;
- /*    } else if (nber && this.currentBookID < 39) {
-      this.bookChapterName = this.bookNames[0][this.currentBookID -1] + " Chap. " + nber; */
-    } else if (nber && this.currentBookID) {
-      this.bookChapterName = this.bookNames[+(this.currentBookID > 38)][this.currentBookID] + " Chap. " + nber;
-    } else if (this.currentBookID && this.currentChapterNumber) {
-    this.bookChapterName = this.bookNames[1][this.currentBookID -1] + " Chap. " +
-          this.currentChapterNumber;
-    } else if (this.currentBookID ) {
-      this.bookChapterName = this.bookNames[+(this.currentBookID > 38)][this.currentBookID] +
-                  " Chap. " + 1;
-    } else {
-      this.bookChapterName = this.bookNames[0][0] + " Chap. " + 1;
+      this.bookName = bookName.split('(').at(0) + ' ';
+      this.chapterName = " Chap. " + 1;
+      //this.bookChapterName = bookName.split('(').at(0) + " Chap. "  + 1;
+    } else if ( this.currentBookID) {
+      const j = this.currentBookID >= this.bookNames[0].length;
+      const chapteNber = (nber !== undefined && nber !== null)? nber :
+      (this.currentChapterNumber !== undefined && this.currentChapterNumber !== null)? this.currentChapterNumber-1: 1;
+      const k = this.currentBookID - (+j*this.bookNames[0].length);
+      this.bookName = this.bookNames[+j][k].split('(').at(0) + ' ';
+      this.chapterName = " Chap. " + chapteNber;
+      //this.bookChapterName = this.bookNames[+j][k].split('(').at(0) + " Chap. " + chapteNber;
+    }  else {
+      this.bookName = this.bookNames[0][0].split('(').at(0) + ' ';
+      this.chapterName = " Chap. " + 1;
+      //this.bookChapterName = this.bookNames[0][0].split('(').at(0) + " Chap. " + 1;
     }
     return this.bookChapterName;
   }
 
   //onBookSelection(index: number, bv?:string) {
   onBookSelection($event: any, bv?:string) {
-     if (bv) {
+     if (bv !== undefined && bv !== null) {
       this.currentBibelVersion = bv;
     }
     const index = $event.value;
@@ -206,6 +211,7 @@ export class EditionComponent implements OnInit, OnDestroy {
   }
 
   onChapterChange(index: number) {
+    console.log('onChapterChange', index);
     this.setCurrentChapterNumber(index);
     this.bookNameAndNumber(this.currentBookName, index);
     this.getCurrentChapter();
@@ -218,10 +224,12 @@ export class EditionComponent implements OnInit, OnDestroy {
     if (this.chapterNumbersOfBook.length < this.currentChapterNumber + 1) {
       this.setCurrentBookID(this.currentBookID+1);
       this.getCurrentChapter();
+      this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
       return;
     }
     this.setCurrentChapterNumber(this.currentChapterNumber + 1);
     this.getCurrentChapter();
+    this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
   }
 
   previous() {
@@ -231,10 +239,12 @@ export class EditionComponent implements OnInit, OnDestroy {
     if (this.currentChapterNumber - 1 < 1) {
       this.setCurrentBookID(this.currentBookID-1);
       this.getCurrentChapter();
+      this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
       return;
     }
     this.setCurrentChapterNumber(this.currentChapterNumber - 1);
     this.getCurrentChapter();
+    this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
   }
 
   updateTranslatedText() {
@@ -252,14 +262,23 @@ export class EditionComponent implements OnInit, OnDestroy {
     this.chapterGhomala.BookID = this.currentBookID;
     this.chapterGhomala.ChapterID = this.currentChapterNumber;
     this.chapterGhomala.Verses = [];
-    this.chapterGhomala.BookName = "book-name";
+    this.chapterGhomala.BookName = "book-name"; // todo
+    this.chapterGhomala.Text = "Text for Chapter"; // todo
+    this.chapterGhomala.Audio = "audio"; //todo
     for(let i = 0; i < this.chapterOther.length; i++) {
-      this.chapterGhomala.Verses[i] = this.chapterOther[i];
-      //this.chapterGhomala.Verses[i].Text =  this.chapterOther[i].Text;
+      let verse = new Verse(this.chapterOther[i].ID!, this.defaultVerse);
+      this.chapterGhomala.Verses[i] = { ...verse };
+      //this.chapterGhomala.Verses[i] = this.chapterOther[i];
+      //this.chapterGhomala.Verses[i].Text =  this.defaultVerse; // this.chapterOther[i].Text;
       //this.chapterGhomala.Verses[i].ID   =  this.chapterOther[i].ID;
     }
-    this.apiSevice.addChapterGhomalaFb(this.chapterGhomala);
+    this.apiSevice.addChapterGhomalaFb(this.chapterGhomala, this.versionGhomala);
   }
+  downloadAudio () {
+    this.chapterGhomala.Audio = "audio"; //todo
+    this.apiSevice.updateChapterGhomalaFb(this.chapterGhomala, this.versionGhomala);
+  }
+
 
   onNewKeyboardWords(typedWords: string, i: number) {
     console.log("onNewWords() called");
@@ -309,5 +328,8 @@ export class EditionComponent implements OnInit, OnDestroy {
     }
   }
 
+  playAudio() {
 
+     console.log('Method playAudio() not implemented yet: todo.');
+    }
 }

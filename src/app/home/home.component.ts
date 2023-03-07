@@ -34,9 +34,9 @@ export class HomeComponent {
   }
 
   onBookSelection(bookId: number) {
-  console.log("onBookChange number: " + bookId);
-  localStorage.setItem('lastBookID', bookId.toString());
-  this.router.navigate(['lanye']);
+    console.log("onBookChange number: " + bookId);
+    localStorage.setItem('lastBookID_study', bookId.toString());
+    this.router.navigate(['lanye']);
   }
 
 }

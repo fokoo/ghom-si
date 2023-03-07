@@ -3,6 +3,7 @@ export class VerseGhomala {
   ChapterID?: string;
   ID?:  number;
   Text?: string;
+  Titel? : string;
   constructor (id?: number, text?: string){
        this.ID = id? id : 0;
        this.Text = text? text : '';

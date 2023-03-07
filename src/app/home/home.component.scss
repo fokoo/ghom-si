@@ -6,7 +6,10 @@ table {
   margin-bottom: 25px;
 }
 td {
-  padding: 5px;
+  //float: right;
+  border: none;
+  background-color: transparent;
+  padding: 6px 15px;
 }
 tr {
   margin-top: 2px;
@@ -17,7 +20,7 @@ tr {
 }
 td:hover {
   background-color: rgb(248, 248, 241);
-  padding: 7px;
+  padding: 7px 16px;
   font-size: large;
 }
 tr:nth-child(even) {
@@ -34,15 +37,18 @@ tr:nth-child(even) {
   border-top-color: lightgrey;
 }
 .text {
-   width: 150px;
+   //width: 150px;
    height: 4px;
    color: brown;
 }
 .btn {
-  float: right;
-  border: none;
-  background-color: transparent;
-  padding: 3px 10px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.color {
+  color: red;
 }
 
 @media screen and (max-width: 900px) {
