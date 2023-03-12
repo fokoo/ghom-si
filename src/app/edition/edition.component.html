@@ -4,7 +4,7 @@
        <mat-label>Livre</mat-label>
         <mat-select [(value)]="currentBookID" (selectionChange)="onBookSelection($event)">
             <div *ngFor="let testament of bookNames let j = index">
-             <mat-option *ngFor="let sc of testament let i = index" [value]="i+j*39">
+             <mat-option *ngFor="let sc of testament let i = index" [value]="i+1+j*39">
               {{ sc }}
              </mat-option>
            </div>
@@ -35,7 +35,8 @@
     <button class="showBookChapter"  (click)="playAudio()">
       <p> {{ bookName }} </p>
       <p style="color: rgb(121, 119, 119); margin-left: 6px;"> {{ chapterName }} </p>
-      <mat-icon class="play" >volume_up</mat-icon>
+      <mat-icon *ngIf="paused" class="play">volume_up</mat-icon>
+      <mat-icon *ngIf="!paused" class="pause">pause_circle_outline</mat-icon>
     </button>
 
     <button class="edit-save">
@@ -56,30 +57,56 @@
 
  <div class='middle' *ngIf="this.chapterGhomala">
   <table>
-    <tr
-       *ngFor="let verse of chapterGhomala.Verses let j = index">
+    <tr *ngFor="let ind of editChapterLength">
      <!-- <div  class="verse" *ngFor="let verse of chapterGhomala"> -->
       <td  [ngClass]="compare? 'text2' : 'text'">
-      <mat-form-field  class="mform" appearance="fill">
-        <mat-label class="verseID">{{  verse.ID  }}</mat-label>
+        <mat-form-field *ngIf="ind === -1 && chapterGhomala.Text" class="mform" appearance="fill">
+          <mat-label class="verseID">{{ chapterGhomala.Title }}</mat-label>
+          <textarea matInput
+          cdkTextareaAutosize
+          [(ngModel)]="chapterGhomala.Text"
+           class="verseEdit"
+           [readonly]="isEditMode">
+              {{chapterGhomala.Text}}
+          </textarea>
+          <app-keyboard *ngIf="showKeyboard && ind === -1"
+          [inputWords] = "chapterGhomala.Text"
+          (outputWords)= "onNewKeyboardWords($event, ind)">
+          </app-keyboard>
+       </mat-form-field>
+
+      <mat-form-field *ngIf="ind > -1 && ind < chapterGhomala.Verses.length" class="mform">
+        <mat-label class="verseID">{{  chapterGhomala.Verses[ind].ID  }}</mat-label>
+        <textarea  matInput
+        cdkTextareaAutosize
+        *ngIf="addVerseTitle"
+         class="verseEdit"
+          [readonly]="isEditMode">
+          {{  chapterGhomala.Verses[ind].Title  }}
+        </textarea>
         <textarea matInput
         cdkTextareaAutosize
-        [(ngModel)]="verse.Text"
+        [(ngModel)]="chapterGhomala.Verses[ind].Text"
          class="verseEdit"
          [readonly]="isEditMode">
-          {{ verse.Text }}
+                {{ chapterGhomala.Verses[ind].Text }}
         </textarea>
+        <app-keyboard *ngIf="showKeyboard && ind > -1"
+          [inputWords] = "chapterGhomala.Verses[ind].Text"
+          (outputWords)= "onNewKeyboardWords($event, ind)">
+        </app-keyboard>
       </mat-form-field>
-       <app-keyboard *ngIf="showKeyboard"
-                  [inputWords] = "chapterOther[j].Text"
-                  (outputWords)= "onNewKeyboardWords($event, j)">
-      </app-keyboard>
+
+
      </td>
 
      <td class="verse">
-          <p class="verseText"  *ngIf="compare === true">
-            <span class="verseID">{{ chapterOther[j].ID? chapterOther[j].ID: 1 }}</span>
-            {{ chapterOther[j].Text }}
+         <p *ngIf="ind === -1 && chapterGhomala.Text && compare === true" class="verseText">
+              {{'Introduction'}}
+          </p>
+          <p class="verseText"  *ngIf="ind > -1 && compare === true && ind < chapterOther.length">
+            <span class="verseID">{{ chapterOther[ind].ID }}</span>
+            {{ chapterOther[ind].Text }}
              <!-- use function/method -->
           </p>
       </td>
@@ -117,13 +144,22 @@
       <mat-icon>edit</mat-icon>
      </button>
   </button>
+
+  <button mat-raised-button (click)="addVerseTitle = !addVerseTitle">
+    Add Title
+  </button>
+
+  <button mat-raised-button >
+    Upload File
+    <mat-icon>attach_file</mat-icon>
+  </button>
+  <button mat-raised-button >
+    Upload Audio
+    <mat-icon>attach_file</mat-icon>
+  </button>
   <button mat-raised-button >
     Télecharger
     <mat-icon>file_download</mat-icon>
-  </button>
-  <button mat-raised-button >
-    Upload
-    <mat-icon>attach_file</mat-icon>
   </button>
 </div>
 

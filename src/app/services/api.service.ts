@@ -81,15 +81,15 @@ getChapterGhomalaFb(bookID: number, chapterID: number, version: number): Observa
 }
 
 addChapterGhomalaFb(chapter: ChapterGhomala, version: number): Observable<void> {
-console.log("addChapterGhomalaFb called");
-if(!chapter === undefined) {
-  return of(void 0);
-}
-chapter.DB_UID = "Book_" + chapter.BookID + "_Chapter_" + chapter.ChapterID;
-//const userFormModel: UserForm = Object.assign(userForm);
-console.log("uid in ChapterGhomala: " + chapter.DB_UID);
-const ref = doc(this.db, 'GhomSi'+version, chapter.DB_UID);
-return from(setDoc(ref, { ...chapter }));
+   console.log("addChapterGhomalaFb called");
+   if(!chapter === undefined) {
+        return of(void 0);
+   }
+   chapter.DB_UID = "Book_" + chapter.BookID + "_Chapter_" + chapter.ChapterID;
+   //const userFormModel: UserForm = Object.assign(userForm);
+   console.log("uid in ChapterGhomala: " + chapter.DB_UID);
+   const ref = doc(this.db, 'GhomSi' + version, chapter.DB_UID);
+   return from(setDoc(ref, { ...chapter }));
 }
 
 updateChapterGhomalaFb( chapter: ChapterGhomala, version: number): Observable<void> {

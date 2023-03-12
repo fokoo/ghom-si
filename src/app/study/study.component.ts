@@ -52,7 +52,7 @@ export class StudyComponent implements OnInit {
   initTop() {
     console.log("initTop called");
     //this.bookNames$ = this.localSevice.getBooks();
-    this.localSevice.getBooks().subscribe(data =>
+    this.localSevice.getBooksGhomala().subscribe(data =>
       {
         this.bookNames = data;
         this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
@@ -69,7 +69,7 @@ export class StudyComponent implements OnInit {
   }
 
   getCurrentChapter() {
-    this.apiSevice.getChapterGhomala(this.currentBookID, this.currentChapterNumber, this.versionGhomala).subscribe(
+    this.apiSevice.getChapterGhomala(this.currentBookID+1, this.currentChapterNumber, this.versionGhomala).subscribe(
       data => {
         this.chapterGhomala = data;
       }
@@ -214,7 +214,7 @@ export class StudyComponent implements OnInit {
   }
 
   previous() {
-    if (this.currentBookID <= 0) {
+    if (this.currentBookID <= 0 && this.currentChapterNumber == 1) {
       return;
     }
     if (this.currentChapterNumber - 1 < 1) {

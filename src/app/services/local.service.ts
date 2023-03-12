@@ -19,6 +19,8 @@ import { KGV } from '../data/kgv';
 })
 export class LocalService {
 
+  OLD_BOOK_LENGTH = 39;
+
 /*   jsonMap = new Map<string, any>([
     ["BOOKS", jsonBook],
     ["S21", jsonBibleS21],
@@ -38,6 +40,11 @@ numbersOfChapterOfBook!: number;
   public getBooks(): Observable<any> {
        console.log('getBooks called');
        return of(Data.books);
+  }
+
+  public getBooksGhomala(): Observable<any> {
+    console.log('getBooks called');
+    return of(Data.booksGhomala);
   }
 
   public getVersions(): Observable<any> {
@@ -60,9 +67,9 @@ numbersOfChapterOfBook!: number;
        testaments = LSG.bible.Testaments;
     }
     console.log('getChapter called with bookID: ' + bookID + ' and version: ' + version);
-    let chapter: any[] = (bookID <= 38)?
+    let chapter: any[] = (bookID < this.OLD_BOOK_LENGTH)?
         testaments[0].Books[bookID].Chapters
-     :  testaments[1].Books[bookID-38].Chapters;
+     :  testaments[1].Books[bookID-this.OLD_BOOK_LENGTH].Chapters;
     return of(chapter) ;
   }
 

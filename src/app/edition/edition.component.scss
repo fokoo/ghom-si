@@ -60,12 +60,14 @@
 .verseText {
   color: rgb(19, 18, 18);
   font-family: "Lucida Console", "Courier New", monospace;
+  background-color: white;
 }
 .verseEdit {
   color: rgb(19, 18, 18);
   font-size: large;
   border: none;
   margin: 0%;
+  background-color: white;
 }
 .verse {
   font-size: large;
@@ -96,6 +98,10 @@
   color: black;
 }
 .play:hover {
+  margin-left: 11px;
+  color: brown;
+}
+.pause {
   margin-left: 11px;
   color: brown;
 }

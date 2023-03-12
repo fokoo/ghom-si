@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SharedService {
+  aud = new Audio ();
 
   constructor() { }
 
@@ -20,6 +21,17 @@ export class SharedService {
   isLoggedIn(): boolean {
     const user = sessionStorage.getItem('user');
     return (user !== 'null' && user === "login")  ? true : false;
+  }
+
+  playAudio(links?: string, paused?: boolean): void {
+    if (paused && links){
+      this.aud.src! = links;
+      console.log('Playing');
+      this.aud.play();
+      // this.paused[id]=!this.paused[id];
+    } else {
+      this.aud.pause();
+    }
   }
 
 /*   private chapter () : any[] {
