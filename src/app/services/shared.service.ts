@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-
+import { ChapterGhomala } from '../models/chapter-ghomala.model';
+import { ChapterForm } from '../models/chapter-form.model';
+import { Verse } from '../models/verse.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -45,4 +47,25 @@ export class SharedService {
     }
     return verses;
   } */
+
+  private versesToText(chapter: ChapterGhomala): string { //todo
+    const sep = "#";
+    let compactText: string = sep;
+    for(let i = 0; i < chapter.Verses.length; i++) {
+      compactText += sep + chapter.Verses[i].ID +  " " + chapter.Verses[i].Text;
+    }
+    return compactText;
+  }
+
+  private versesTextToArray(text: string): Verse[] { //todo
+    const sep = "#";
+    let arr: string[] = text.split(sep);
+    let verses: Verse[] = [];
+    for(let i = 0; i < arr.length; i++) {
+      if(arr[i]) //todo
+       verses[i] =  new Verse(i+1, arr[i]);
+    }
+    return verses;
+  } 
+
 }

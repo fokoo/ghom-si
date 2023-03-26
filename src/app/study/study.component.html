@@ -26,9 +26,9 @@
 </div>
 <div class="chNberOfBook">
   <button *ngFor="let item of chapterNumbersOfBook"
-   (click)="onChapterChange(item)"
-   [ngClass]="currentChapterNumber === item ? 'btn-selected' : 'btn'">
-      {{ item }}
+   (click)="onChapterChange(item-1)"
+   [ngClass]="currentChapterNumber === (item-1) ? 'btn-selected' : 'btn'">
+         {{ item }}
   </button>
 </div>
 <div class="menu">

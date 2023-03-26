@@ -8,6 +8,7 @@ import {
 } from "@angular/fire/auth";
 import { deleteDoc, doc, docData, Firestore, setDoc, updateDoc } from '@angular/fire/firestore';
 import { ChapterGhomala } from '../models/chapter-ghomala.model';
+import { ChapterForm } from '../models/chapter-form.model';
 
 @Injectable({
   providedIn: 'root'
@@ -58,14 +59,17 @@ private chapter (bookID: number) : any[] {   // temporary until method done
   return verses;
 }
 
-getChapterGhomala(bookID: number, chapterID: number, version: number): Observable<any> {
+//todo delete
+ getChapterGhomala(bookID: number, chapterID: number, version: number): Observable<any> {
+  console.log("getChapterGhomalaFb called");
   return of(this.chapter(bookID));
-}
+} 
 
-getChapterGhomalaFb(bookID: number, chapterID: number, version: number): Observable<any> {
+getChapterGhomalaFb(bookID: number, chapterID: number, version: string): Observable<any> {
+  console.log("getChapterGhomalaFb called");
   const DB_UID = "Book_" + bookID + "_Chapter_" + chapterID;
   const ref = doc(this.db, 'GhomSi'+version, DB_UID);
-  return docData(ref) as Observable<ChapterGhomala>;
+  return docData(ref) as Observable<ChapterForm>;
   /*
   return  this.currentUser$.pipe(
   switchMap((user) => {
@@ -80,24 +84,47 @@ getChapterGhomalaFb(bookID: number, chapterID: number, version: number): Observa
   */
 }
 
-addChapterGhomalaFb(chapter: ChapterGhomala, version: number): Observable<void> {
+addChapterGhomalaFb(chapter: ChapterGhomala, version: string): Observable<void> {
    console.log("addChapterGhomalaFb called");
-   if(!chapter === undefined) {
+   if(!chapter === undefined || chapter === null) {
         return of(void 0);
    }
-   chapter.DB_UID = "Book_" + chapter.BookID + "_Chapter_" + chapter.ChapterID;
+   const DB_UID = "Book_" + chapter.BookID + "_Chapter_" + chapter.ChapterID;
    //const userFormModel: UserForm = Object.assign(userForm);
-   console.log("uid in ChapterGhomala: " + chapter.DB_UID);
-   const ref = doc(this.db, 'GhomSi' + version, chapter.DB_UID);
+   console.log("uid in ChapterGhomala: " + DB_UID);
+   const ref = doc(this.db, 'GhomSi' + version, DB_UID);
+
+   // chapter2 = chapter;
+   // chapter2.DB_UID = DB_UID;
+   // const ref2 = doc(this.db, 'GhomSiGhomala');
+   // console.log("set ref2 next to call");
+   // setDoc(ref2, { ...chapter }, { merge: true });
+
+   console.log("set ref next to call");
    return from(setDoc(ref, { ...chapter }));
 }
 
-updateChapterGhomalaFb( chapter: ChapterGhomala, version: number): Observable<void> {
-  console.log("addChapterGhomalaFb called");
-  if(!chapter === undefined) {
-    return of(void 0);
+addChapterFormFb(chapter: ChapterForm, version: string): Observable<void> {
+  console.log("addChapterFormFb called");
+  if(!chapter === undefined || chapter === null) {
+       return of(void 0);
   }
+  const DB_UID = "Book_" + chapter.BookID + "_Chapter_" + chapter.ChapterID;
+  console.log("uid in ChapterForm: " + chapter);
+  console.log("uid in ChapterForm: " + DB_UID);
+  const ref = doc(this.db, 'GhomSi' + version, DB_UID);
+
+  console.log("set ref next to call");
+  return from(setDoc(ref, { ...chapter }));
+}
+
+updateChapterGhomalaFb( chapter: ChapterGhomala, version: string): Observable<void> {
+  console.log("updateChapterGhomalaFb called");
+  if(!chapter === undefined || chapter === null) {
+    return of(void 0);
+}
   const ref = doc(this.db, 'GhomSi'+version, chapter.DB_UID!);
+  console.log("updateChapterGhomalaFb return");
   return from(updateDoc(ref, { ...chapter }));
 }
 

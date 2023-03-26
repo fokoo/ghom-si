@@ -51,26 +51,43 @@ numbersOfChapterOfBook!: number;
     return of(Data.versions);
   }
 
-  getChapter(bookID: number, version: string): Observable<any> {
+  public getVersionGhomala(): Observable<any> {
+    return of(Data.versionsGhomala);
+  }
+
+  public getNumberOfChapterOfBook(): Observable<number[]> {
+    return of(Data.numberOfChapterOfBook);
+  }
+
+  getChapter(version: string, bookID: number, currentChapterNumber: number): Observable<any> {
     let testaments: any[] =  [];
-    if (version == "LSG") {
+    if (version == Data.versions[0]) {
        testaments = LSG.bible.Testaments;
-    } else if (version == "S21") {
-       testaments = S21.bible.Testaments;
-    } else if (version == "SEMEUR") {
-       testaments = SEMEUR.bible;
-    } else if (version == "MARTIN") {
-       testaments = MARTIN.bible;
-    } else if (version == "KGV") {
-        testaments = KGV.bible;
+    } else if (version == Data.versions[1]) {
+      testaments = S21.bible.Testaments;
+    } else if (version == Data.versions[2]) {
+      testaments = KGV.bible;
+      let chapterList : string[][] = testaments[bookID].chapters;
+      console.log("kgv " + chapterList[0].length);
+      let chapter: any[] = [];
+      for (let i = 0; i < chapterList[currentChapterNumber].length; i++)
+      {
+          chapter.push( //new Verse(i+1, chapterList[currentChapterNumber]));
+            { Title: '', ID:i+1, Text: chapterList[currentChapterNumber][i] } );
+      }
+      return of(chapter) ;
+   /*  } else if (version == Data.versions[3]) {
+      testaments = SEMEUR.bible;
+    } else if (version == Data.versions[4]) {
+      testaments = MARTIN.bible; */
     } else {
-       testaments = LSG.bible.Testaments;
+      testaments = LSG.bible.Testaments;
     }
     console.log('getChapter called with bookID: ' + bookID + ' and version: ' + version);
-    let chapter: any[] = (bookID < this.OLD_BOOK_LENGTH)?
+    let chapters: any[] = (bookID < this.OLD_BOOK_LENGTH)?
         testaments[0].Books[bookID].Chapters
      :  testaments[1].Books[bookID-this.OLD_BOOK_LENGTH].Chapters;
-    return of(chapter) ;
+    return of(chapters) ;
   }
 
  /*  public getJSON(key: string): Observable<any> {
