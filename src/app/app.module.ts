@@ -5,6 +5,7 @@ import { HotToastModule } from '@ngneat/hot-toast';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/environments/environment';
 import { MaterialModule } from './material.module';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 //import {AngularFireModule} from "@angular/fire";
 import {initializeApp, provideFirebaseApp} from "@angular/fire/app";
@@ -22,6 +23,7 @@ import { FooterComponent } from './footer/footer.component';
 import { KeyboardComponent } from './keyboard/keyboard.component';
 import { HomeComponent } from './home/home.component';
 import { SigninComponent } from './signin/signin.component';
+import { DialogComponent } from './dialog/dialog.component';
 
 
 
@@ -34,7 +36,8 @@ import { SigninComponent } from './signin/signin.component';
     FooterComponent,
     KeyboardComponent,
     HomeComponent,
-    SigninComponent
+    SigninComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import { SigninComponent } from './signin/signin.component';
     provideStorage(() => getStorage()),
     BrowserAnimationsModule,
     MaterialModule,
+    NgxSpinnerModule,
     HotToastModule.forRoot()
   ],
   providers: [],

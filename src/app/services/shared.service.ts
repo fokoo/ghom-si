@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { ChapterGhomala } from '../models/chapter-ghomala.model';
 import { ChapterForm } from '../models/chapter-form.model';
 import { Verse } from '../models/verse.model';
+import {HotToastService} from "@ngneat/hot-toast";
 @Injectable({
   providedIn: 'root'
 })
 export class SharedService {
   aud = new Audio ();
 
-  constructor() { }
+  constructor(
+    private toast: HotToastService
+  ) {}
 
   getArrayNumber(start: number, end: number): number[] {
     console.log('getArrayNumber called with start: ' + start + ', end: ' + end);
@@ -57,15 +60,56 @@ export class SharedService {
     return compactText;
   }
 
-  private versesTextToArray(text: string): Verse[] { //todo
-    const sep = "#";
-    let arr: string[] = text.split(sep);
-    let verses: Verse[] = [];
-    for(let i = 0; i < arr.length; i++) {
-      if(arr[i]) //todo
-       verses[i] =  new Verse(i+1, arr[i]);
+  private versesTextToArray(text: string): any[] { //todo
+    // const sep = "#";
+    // let arr: string[] = text.split(sep);
+    // let verses: Verse[] = [];
+    // for(let i = 0; i < arr.length; i++) {
+    //   if(arr[i]) //todo
+    //    verses[i] =  new Verse(i+1, arr[i]);
+    // }
+    // return verses;
+    const test = text.split("#v");
+    const text1 = test.filter(x => x.length > 0 && x !== " ");
+    const text2 = [];
+    let verse: string[] = [];
+    let i = 0;
+    while (i < text1.length) {
+     if (text1[i].includes("#t")) {
+        text1[i] = text1[i].replace("#t", "");
+        if (i === text1.length-1){
+            text2.push({
+              Title: text1[i].trim()
+            });
+            break;
+        }
+        verse = text1[i+1].split("#");
+        text2.push({
+        Title: text1[i].trim(),
+        ID: verse[0].trim(),
+        Text: verse[1].trim()
+        });
+        i +=2;
+     } else {
+        verse = text1[i].split("#");
+        text2.push({
+        ID: verse[0].trim(),
+        Text: verse[1].trim()
+       });
+       i +=1;
+     }
     }
-    return verses;
-  } 
+    this.checkError(text1[i].trim());
+    this.checkError(verse[0].trim());
+    this.checkError(verse[1].trim());
+    console.log(text2);
+    return text2;
+  }
+
+  checkError(st: string): void {
+     if (st.includes("#")) {
+       this.toast.error( st + "contient une Erreur de syntax")
+     }
+  }
 
 }

@@ -1,10 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray,
-         FormControl,
-          FormGroup,
-          UntypedFormArray,
+/* import {  FormControl,
           UntypedFormGroup,
-          NonNullableFormBuilder } from '@angular/forms';
+          NonNullableFormBuilder } from '@angular/forms'; */
 import { ActivatedRoute } from '@angular/router';
 import { ChapterGhomala } from '../models/chapter-ghomala.model';
 import { ChapterForm } from '../models/chapter-form.model';
@@ -14,6 +11,9 @@ import { LocalService } from '../services/local.service';
 import { SharedService } from '../services/shared.service';
 import {HotToastService} from "@ngneat/hot-toast";
 //import { catchError, tap } from 'rxjs/operators';
+import { NgxSpinnerService } from "ngx-spinner";
+import { DialogComponent } from '../dialog/dialog.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-edition',
@@ -29,13 +29,21 @@ export class EditionComponent implements OnInit, OnDestroy {
   HIGHER_CHAPTER_ID = 150;
   ADD_EDIT = 5;
 
-  mainForm!: UntypedFormGroup;
+  Shift = '&#10;';
+  VerseSeparation = " \"Verse{Number}#{ Text }\" ";
+  TitleSeparation = " \"Title#{ Text }\" ";
+
+  //mainForm!: UntypedFormGroup;
   //VersesFormArray!: UntypedFormArray;
   //VerseForm!: UntypedFormGroup;
-  VersesCompactCtrl!: FormControl;
-  IntroductionCtrl!: FormControl;
-  TitleCtrl!: FormControl;
-  AudioCtrl!: FormControl;
+  //VersesCompactCtrl!: FormControl;
+  //IntroductionCtrl!: FormControl;
+  //TitleCtrl!: FormControl;
+  //AudioCtrl!: FormControl;
+
+  VersesCompactText?: string;
+  IntroductionText?: string;
+  TitleText?: string;
 
   compactText = true;
   bookNames!: any[][];
@@ -58,28 +66,32 @@ export class EditionComponent implements OnInit, OnDestroy {
   chapterNberList!: number[];
   direction: boolean = true;
   defaultVerse = "Aucune traduction de ce Versé disponible";
-  isEditMode = true;
+  isEditMode = false;
   translatedText!: string[];
   showKeyboard: any;
   saveChapterGhomala!: ChapterForm;
   VersionsGhomala! : string[];
   curGhomalaVersion! : string;
   paused = true;
-  addVerseTitle = false;
+  //showProgress!: boolean;
+  confirmDialog!: number;
 
   constructor(
-    private nonNullableFormBuilder: NonNullableFormBuilder,
+    //private nonNullableFormBuilder: NonNullableFormBuilder,
     private localSevice: LocalService,
     private apiSevice: ApiService,
     //private router: Router,
     private sharedService: SharedService,
-    private toast: HotToastService) { }
+    private toast: HotToastService,
+    private spinner: NgxSpinnerService,
+    public dialog: MatDialog) { }
 
 
   ngOnInit(): void {
     this.setCurrentBookID();
     this.initTop();
-    this.initForm();
+    //this.initForm();
+    // todo add spinner when app start
     this.getCurrentChapter();
   }
 
@@ -120,7 +132,12 @@ export class EditionComponent implements OnInit, OnDestroy {
   }
 
   getCurrentChapter() {
+    if (this.isEditMode) {
+       this.openDialog();
+    }
+    this.spinner.show();
     const edit = localStorage.getItem('editMode');
+    //this.spinner.show();
     this.apiSevice.getChapterGhomalaFb(this.currentBookID+1, this.currentChapterNumber+1, this.curGhomalaVersion).subscribe(
       data => {
         if (edit !== null && 1 === +edit)
@@ -132,8 +149,10 @@ export class EditionComponent implements OnInit, OnDestroy {
         {
            this.chapterGhomala = data? data : new ChapterForm();
         }
-        this.saveChapterGhomala = this.chapterGhomala;
+        //this.saveChapterGhomala = this.chapterGhomala;
         this.initForm(this.chapterGhomala);
+        this.spinner.hide();
+
       }
     );
     console.log('getCurrentChapter called with bookID: ' + this.currentBookID + ' and version: ' + this.currentBibelVersion);
@@ -149,7 +168,12 @@ export class EditionComponent implements OnInit, OnDestroy {
         {
            this.chapterOther = data[this.currentChapterNumber].Verses;
         }
-        this.setNumberOfChaptersOfBook(this.chapterNberList[this.currentBookID]);
+        this.localSevice.getNumberOfChapterOfBook().subscribe((data) =>
+        {
+           this.chapterNberList = data;
+           this.setNumberOfChaptersOfBook(this.chapterNberList[this.currentBookID]);
+        }
+        );
       }
     );
   }
@@ -213,7 +237,6 @@ export class EditionComponent implements OnInit, OnDestroy {
   private setVersion(curBibelVersion?: string) {
     if(curBibelVersion){
       this.currentBibelVersion = curBibelVersion;
-      this.onBookSelection(this.currentBookID, curBibelVersion);
       localStorage.setItem('lastVersion', curBibelVersion);
     } else {
       const cbv = localStorage.getItem('lastVersion');
@@ -223,6 +246,7 @@ export class EditionComponent implements OnInit, OnDestroy {
         this.currentBibelVersion = this.bibleVersions[0];
       }
     }
+    this.onBookSelection(this.currentBookID, this.currentBibelVersion);
   }
 
   private setVersionGhomala(cgv?: string) {
@@ -288,7 +312,8 @@ export class EditionComponent implements OnInit, OnDestroy {
       const chapteNber = (nber !== undefined && nber !== null)? nber+1 :
       (this.currentChapterNumber !== undefined && this.currentChapterNumber !== null)? this.currentChapterNumber-1: 1;
       const k = this.currentBookID - (+j*this.bookNames[0].length);
-      this.bookName = this.bookNames[+j][k-1].split('(').at(0) + ' ';
+      console.log("j = " + j + ", k = " + k);
+      this.bookName = this.bookNames[+j][k].split('(').at(0) + ' ';
       this.chapterName = " Chap. " + chapteNber;
       //this.bookChapterName = this.bookNames[+j][k-1].split('(').at(0) + " Chap. " + chapteNber;
     }
@@ -316,14 +341,12 @@ export class EditionComponent implements OnInit, OnDestroy {
       this.currentBookName = this.bookNames[+(index >= this.OLD_BOOK_LENGTH)][index];
     }
     this.onChapterChange(this.FIRST_CHAPTER_ID);
-    this.getCurrentChapter();
       // todo) get bibel and chapter from api
   }
 
   onBibleVersionsSelection($event: any) {
     console.log('version set is ', $event.value)
     this.setVersion($event.value);
-    this.getCurrentChapter();
      // todo) get version, bibel and chapter from api
   }
 
@@ -343,34 +366,57 @@ export class EditionComponent implements OnInit, OnDestroy {
     this.isEditMode = !this.isEditMode;
   }
 
+
   initForm(chapterForm?: ChapterForm) {
     console.log("initForm() called");
-    this.TitleCtrl = new FormControl(chapterForm?.Title);
-    this.IntroductionCtrl = new FormControl(chapterForm?.Introduction);
-   // if (this.compactText === true) {
-      this.VersesCompactCtrl = new FormControl(chapterForm?.Verses , { updateOn: 'blur' });
-   // }
-    this.mainForm = this.nonNullableFormBuilder.group({
-        Title: this.TitleCtrl,
-        Introduction: this.IntroductionCtrl,
-        Verses: this.VersesCompactCtrl
-    });
+    if (chapterForm) {
+       this.TitleText = (chapterForm.Title)?chapterForm.Title: "";
+       this.IntroductionText = (chapterForm.Introduction)?chapterForm.Introduction : "" ;
+       this.VersesCompactText = (chapterForm.Verses)?chapterForm.Verses:this.VerseSeparation;
+    }
   }
 
+  updateTitle(){}
+  updateIntroduction(){
+ /*    if (this.IntroductionText) {
+      this.onNewKeyboardWords(this.IntroductionText, -1);
+    } */
+  }
+  updateVerses(){
+  }
+
+  addVerse(shift: string) {
+    if (this.VersesCompactText) {
+      this.VersesCompactText += shift;
+      this.VersesCompactText += this.VerseSeparation;
+    } else {
+      this.VersesCompactText = this.VerseSeparation;
+    }
+
+  }
+
+  addTitle(shift: string) {
+    this.VersesCompactText += shift;
+    this.VersesCompactText += this.TitleSeparation;
+  }
+
+
   //todo confirmation before saving
-  saveChapter() {
+  private saveChapter() {
     console.log("saveChapter() called");
     const chapterForm =
     {
-      ...this.mainForm.value,
+      Title: this.TitleText,
+      Introduction: this.IntroductionText,
+      Verses: this.VersesCompactText,
       BookID: this.currentBookID+1,
       ChapterID: this.currentChapterNumber+1,
       Audio: "audio-link"
     }
     this.apiSevice.addChapterFormFb(chapterForm, this.curGhomalaVersion).pipe(
       this.toast.observe({
-        success: 'Congrats! You are all signed up',
-        loading: 'Signing up...',
+        success: 'Congrats! Change has been successfully saved',
+        loading: 'Saving ...',
         error: ({message}) => `${message}`,
       })
     ).subscribe();
@@ -378,16 +424,40 @@ export class EditionComponent implements OnInit, OnDestroy {
 
   onSubmitForm(){
     this.saveChapter();
+    this.edit();
+  }
+
+  keyboard() {
+    this.showKeyboard = !this.showKeyboard;
+    this.edit()
   }
   //todo
   onNewKeyboardWords(typedWords: string, i: number) {
     if(i === -1 ){
-      this.chapterGhomala.Introduction = typedWords;
+      this.IntroductionText = typedWords;
       return;
     }
     console.log("onNewWords() called");
     console.log(typedWords);
-    this.chapterGhomala.Verses = typedWords;
+    this.VersesCompactText = typedWords;
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {title: "Attention!",
+             content: "Voulez-vous sauvegadez les changements",
+             no: "NON",
+             yes: "OUI"},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.confirmDialog = +(result);
+      if (this.confirmDialog === 1) {
+         this.saveChapter();
+      }
+      this.edit();
+    });
   }
 
   //todo
@@ -407,11 +477,12 @@ export class EditionComponent implements OnInit, OnDestroy {
 
   //todo
   resetChapter() {
-    this.isEditMode = !this.isEditMode;
-    this.chapterGhomala = this.saveChapterGhomala;
+    this.edit();
+    this.getCurrentChapter();
   }
 
   initLocale (editMode: boolean): void {
+    console.log("initLocale(..) called!");
     if (editMode === true) {
       this.chapterGhomala = JSON.parse(localStorage.getItem('chapterGhomala')!);
       this.isEditMode = editMode;

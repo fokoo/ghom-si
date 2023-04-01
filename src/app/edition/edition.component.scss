@@ -63,12 +63,21 @@
   font-family: "Lucida Console", "Courier New", monospace;
   background-color: white;
 }
+.introductionEdit {
+  color: rgb(19, 18, 18);
+  font-size: large;
+  border: none;
+  margin: 0%;
+  background-color: white;
+}
 .verseEdit {
   color: rgb(19, 18, 18);
   font-size: large;
   border: none;
   margin: 0%;
   background-color: white;
+  width: 100%;
+  height: 100%;
 }
 .verse {
   font-size: large;
@@ -112,7 +121,7 @@ mat-card {
 }
 textarea {
   width: 100%;
-  height: 100%; 
+  height: 100%;
   box-sizing: border-box;
 }
 @media screen and (max-width: 600px) {

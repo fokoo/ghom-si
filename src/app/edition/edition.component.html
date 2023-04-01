@@ -1,3 +1,12 @@
+
+<ngx-spinner
+ bdColor="rgba(51,51,51,0.8)"
+ size="medium"
+ color="#fff"
+ type="ball-scale-multiple">
+ <p style="font-size: 20px; color: white">Chargement...</p>
+</ngx-spinner>
+
  <div class="menu-top">
     <div>
       <mat-form-field>
@@ -51,11 +60,11 @@
     </button>
 
     <button class="edit-save">
-      <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="resetChapter()">
+      <button *ngIf="isEditMode === true" mat-raised-button color="warn" (click)="resetChapter()">
         Rétablir
        <mat-icon>save</mat-icon>
       </button>
-      <button *ngIf="isEditMode" mat-raised-button color="primary" (click)="edit()">
+      <button *ngIf="isEditMode === false" mat-raised-button color="primary" (click)="edit()">
         Éditer
        <mat-icon>edit</mat-icon>
       </button>
@@ -69,33 +78,37 @@
  <!-- 0 < chapterGhomala.Verses.length && , VersesFormArray.controls -->
 
 
- <mat-card class='middle' [formGroup]="mainForm">
+ <mat-card class='middle'>
   <table>
     <tr>
-      <td>
+      <td  [ngClass]="compare? 'text2' : 'text'">
        <mat-card>
         <mat-form-field  class="mform" appearance="fill">
           <mat-label>Titre</mat-label>
           <!-- <mat-label class="verseID">{{ chapterGhomala.Title }}</mat-label> -->
-          <input matInput type="text" id="Title" placeholder="Entrer le titre du chapitre ici"
-          [formControl]="TitleCtrl">
+          <input matInput type="text" id="Title"
+               placeholder="Entrer le titre du chapitre ici"
+               [(ngModel)]="TitleText"
+               (ngModelChange)="updateTitle()">
         </mat-form-field>
         <mat-form-field  class="mform" appearance="outline">
           <mat-label>Introduction</mat-label>
-          <textarea matInput  cdkTextareaAutosize
-           class="verseEdit" [readonly]="isEditMode"
+          <textarea matInput
+           cdkTextareaAutosize cdkAutosizeMinRows="1"
+           class="introductionEdit" [readonly]="!isEditMode"
            id="Introduction" placeholder="Entrer l'introdution du chapitre ici"
-           [formControl]="IntroductionCtrl">
+           [(ngModel)]="IntroductionText"
+           (ngModelChange)="updateIntroduction()">
+
           </textarea>
         </mat-form-field>
-        
+        <div>
+          <app-keyboard *ngIf="showKeyboard"
+          [inputWords]="IntroductionText"
+          (outputWords)="onNewKeyboardWords($event, -1)">
+          </app-keyboard>
+         </div>
        </mat-card>
-       <div>
-        <app-keyboard *ngIf="showKeyboard"
-        [inputWords]="VersesCompactCtrl.value"
-        (outputWords)="onNewKeyboardWords($event, -1)">
-        </app-keyboard>
-       </div>
       </td>
 
       <td>
@@ -105,19 +118,22 @@
       </td>
     </tr>
     <tr>
-      <td>
-        <mat-card>   
+      <td   [ngClass]="compare? 'text2' : 'text'">
+        <mat-card>
           <mat-form-field  class="mform" appearance="outline">
-            <mat-label>Verses Text</mat-label>
-            <textarea matInput  cdkTextareaAutosize
-             class="verseEdit" [readonly]="isEditMode"
+            <mat-label>Les Verses</mat-label>
+            <textarea matInput
+            cdkTextareaAutosize cdkAutosizeMinRows="5"
+             class="verseEdit" [readonly]="!isEditMode"
              id="Verses" placeholder="Entrer les verses du chapitre ici"
-             [formControl]="VersesCompactCtrl">
+             [(ngModel)]="VersesCompactText"
+             (ngModelChange)="updateVerses()">
+                   {{VersesCompactText}}
             </textarea>
           </mat-form-field>
             <app-keyboard *ngIf="showKeyboard"
-            [inputWords]="VersesCompactCtrl.value"
-            (outputWords)="onNewKeyboardWords($event, -1)">
+            [inputWords]="VersesCompactText"
+            (outputWords)="onNewKeyboardWords($event, 1)">
             </app-keyboard>
          </mat-card>
       </td>
@@ -138,9 +154,29 @@
             accept="audio/*" capture id="audio"
            [formControl]="audioFormCtrl">
    </mat-card> -->
-   <mat-card-actions *ngIf="mainForm.valid">
-    <button mat-flat-button color="primary" (click)="onSubmitForm()">ENREGISTRER</button>
-  </mat-card-actions>
+
+   <div class="menu">
+   <mat-card-actions>
+      <button *ngIf="isEditMode" mat-raised-button color="warn"  (click)="onSubmitForm()">
+        ENREGISTRER
+        <mat-icon>save</mat-icon>
+      </button>
+      <button *ngIf="!isEditMode" mat-raised-button color="primary" (click)="edit()">
+        Éditer
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-card-actions>
+    <mat-card-actions *ngIf="isEditMode">
+      <button mat-stroked-button color="primary"  (click)="addVerse('&#10;')">
+         New Verse
+      </button>
+    </mat-card-actions>
+    <mat-card-actions *ngIf="isEditMode">
+  <button  mat-stroked-button color="primary"  (click)="addTitle('&#10;')">
+         New Title
+      </button>
+    </mat-card-actions>
+  </div>
  </mat-card>
 
 
@@ -161,11 +197,11 @@
  </div>
  </div> -->
  <div class="menu">
-  <button mat-raised-button color="primary"  (click)="showKeyboard = !showKeyboard">
+  <button mat-raised-button color="primary"  (click)="keyboard()">
        <mat-icon class="mat-36">keyboard</mat-icon>
   </button>
-  <button class="edit-save">
-     <button *ngIf="!isEditMode" mat-raised-button color="warn" (click)="saveChapter()">
+<!--   <button class="edit-save">
+     <button *ngIf="isEditMode" mat-raised-button color="warn" (click)="saveChapter()">
        Envoyer
       <mat-icon>save</mat-icon>
      </button>
@@ -173,11 +209,8 @@
        Éditer
       <mat-icon>edit</mat-icon>
      </button>
-  </button>
+  </button> -->
 
-  <button mat-raised-button (click)="addVerseTitle = !addVerseTitle">
-    Add Title
-  </button>
 
   <button mat-raised-button >
     Upload File

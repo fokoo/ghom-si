@@ -82,7 +82,7 @@ export class StudyComponent implements OnInit {
   }
 
   getCurrentChapter() {
-    this.apiSevice.getChapterGhomala(this.currentBookID+1, this.currentChapterNumber+1, this.versionGhomala).subscribe(
+    this.apiSevice.getChapterGhomalaFb(this.currentBookID+1, this.currentChapterNumber+1, this.versionGhomala).subscribe(
       data => {
         this.chapterGhomala = data;
       }
