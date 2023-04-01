@@ -349,8 +349,8 @@ export class EditionComponent implements OnInit, OnDestroy {
     this.IntroductionCtrl = new FormControl(chapterForm?.Introduction);
    // if (this.compactText === true) {
       this.VersesCompactCtrl = new FormControl(chapterForm?.Verses , { updateOn: 'blur' });
-   // } 
-    this.mainForm = this.nonNullableFormBuilder.group({ 
+   // }
+    this.mainForm = this.nonNullableFormBuilder.group({
         Title: this.TitleCtrl,
         Introduction: this.IntroductionCtrl,
         Verses: this.VersesCompactCtrl
@@ -361,10 +361,10 @@ export class EditionComponent implements OnInit, OnDestroy {
   saveChapter() {
     console.log("saveChapter() called");
     const chapterForm =
-    { 
+    {
       ...this.mainForm.value,
-      BookID: this.currentBookID,
-      ChapterID: this.currentChapterNumber,
+      BookID: this.currentBookID+1,
+      ChapterID: this.currentChapterNumber+1,
       Audio: "audio-link"
     }
     this.apiSevice.addChapterFormFb(chapterForm, this.curGhomalaVersion).pipe(
