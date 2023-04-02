@@ -31,7 +31,7 @@ export class StudyComponent implements OnInit {
   bookChapterName!: string;
   //bibleVersions$!: Observable<any>;
   bibleVersions!: string[];
-  compare!: boolean;
+  compare: boolean = false;
   chapterNumbersOfBook!: number[];
   chapterGhomala!: ChapterGhomala;
   chapterOther: Verse[] = [];
@@ -85,7 +85,7 @@ export class StudyComponent implements OnInit {
    );
     this.localSevice.getNumberOfChapterOfBook().subscribe((data) =>
     {
-       this.chapterNberList = {...data, };
+       this.chapterNberList = {...data };
     }
     );
   }
@@ -95,10 +95,14 @@ export class StudyComponent implements OnInit {
       data => {
         //const chapterForm: ChapterForm = data;
         //console.log("data: " + data);
-        const Verses = this.sharedService.versesTextToArray(data.Verses);
-        console.log("verses: " + Verses);
-        this.chapterGhomala = {...data,
-                               Verses: Verses};
+        this.chapterGhomala = new ChapterGhomala;
+        if (data != undefined && data != null) {
+          const Verses = this.sharedService.versesTextToArray(data.Verses);
+          console.log("verses: " + Verses);
+          this.chapterGhomala = {...data,
+                                 Verses: Verses};
+        }
+
       }
     );
     console.log('getCurrentChapter called with bookID: ' + this.currentBookID + ' and version: ' + this.currentBibelVersion);
@@ -127,9 +131,9 @@ export class StudyComponent implements OnInit {
 
   setCurrentBookID(cbn?: number) {
     if (cbn !== undefined ) {
-      if (cbn >= this.BOOK_LENGTH) {
+      if (cbn >= this.BOOK_LENGTH || cbn < this.FIRST_BOOK_NUMBER) {
         cbn = this.FIRST_BOOK_NUMBER;
-        this.currentBookID = (this.currentBookID === undefined)? cbn : this.currentBookID;
+        this.currentBookID = cbn;//(this.currentBookID === undefined)? cbn : this.currentBookID;
         this.setCurrentChapterNumber(this.FIRST_CHAPTER_ID);
         localStorage.setItem('lastBookID_study', cbn.toString());
         console.log("set setCurrentBookID called 0: " + cbn);

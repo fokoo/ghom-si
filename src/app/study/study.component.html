@@ -63,11 +63,19 @@
   </button>
   <button mat-raised-button (click)="compare = !compare">
          Comparer
+         <mat-icon *ngIf="compare === false" style="color: chartreuse; size: 20;">touch_app</mat-icon>
+         <mat-icon *ngIf="compare === true" style="color: coral;">close</mat-icon>
   </button>
 </div>
 <div [ngClass]="direction? 'middle row' : 'middle column'">
   <div *ngIf="chapterGhomala" [ngClass]="compare && direction? 'text2' : 'text'">
    <!-- <div  class="verse" *ngFor="let verse of chapterGhomala"> -->
+    <div class="verse">
+      <h2 *ngIf="chapterGhomala.Title">{{ chapterGhomala.Title }}</h2>
+     <p class="verseText" *ngIf="chapterGhomala.Introduction">
+      {{  chapterGhomala.Introduction  }}
+    </p>
+   </div>
     <div class="verse" *ngFor="let verse of chapterGhomala.Verses, let i = index">
       <h3 *ngIf="verse.Title">{{ verse.Title }}</h3>
      <p class="verseText" *ngIf="verse.Text">
@@ -98,14 +106,14 @@
 
 </div> -->
 
-<div class="menu-bottom">
+<!-- <div class="menu-bottom">
     <button mat-raised-button (click)="previous()">
       <mat-icon>navigate_before</mat-icon>
     </button>
     <button mat-raised-button (click)="next()">
       <mat-icon>navigate_next</mat-icon>
     </button>
-</div>
+</div> -->
 
 
 <!-- *ngFor="let testamentName of bookNames$ | async  let i = index;" -->

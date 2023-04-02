@@ -148,8 +148,8 @@ export class Data {
        "APOKALIPSƏ (Ap)"
       ]
    ]
-   static versions: string[] = ["LSG", "S21", "KGV", "SEMEUR", "MARTIN"];
-   //static versions: string[] = ["S21", "LSG", "KGV"];
+   //static versions: string[] = ["LSG", "S21", "KGV", "SEMEUR", "MARTIN"];
+   static versions: string[] = ["S21", "LSG", "KGV"];
    static versionsGhomala: string[] = ["Evangelik","Katholik","GHOMSI"];
 
    static numberOfChapterOfBook =

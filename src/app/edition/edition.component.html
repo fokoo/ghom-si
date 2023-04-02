@@ -72,6 +72,8 @@
 
     <button mat-raised-button (click)="compareBtn()">
          Comparer
+         <mat-icon *ngIf="compare === false" style="color: chartreuse; size: 20;">touch_app</mat-icon>
+         <mat-icon *ngIf="compare === true" style="color: coral;">close</mat-icon>
     </button>
  </div>
 
@@ -123,7 +125,7 @@
           <mat-form-field  class="mform" appearance="outline">
             <mat-label>Les Verses</mat-label>
             <textarea matInput
-            cdkTextareaAutosize cdkAutosizeMinRows="5"
+            cdkTextareaAutosize cdkAutosizeMinRows="6"
              class="verseEdit" [readonly]="!isEditMode"
              id="Verses" placeholder="Entrer les verses du chapitre ici"
              [(ngModel)]="VersesCompactText"
@@ -226,11 +228,11 @@
   </button>
 </div>
 
-<div class="menu-bottom">
+<!-- <div class="menu-bottom">
   <button mat-raised-button (click)="previous()">
     <mat-icon>navigate_before</mat-icon>
   </button>
   <button mat-raised-button (click)="next()">
     <mat-icon>navigate_next</mat-icon>
   </button>
-</div>
+</div> -->

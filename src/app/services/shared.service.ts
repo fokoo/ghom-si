@@ -70,7 +70,7 @@ export class SharedService {
     let title: string = "";
     let i = 0;
     while (i < text1.length) {
-     if (text1[i].includes("#t")) {
+     if (text1[i].includes("#t#")) {
           if (i === 0) {
             text1[i] = text1[i].replace("#t#", "");
             title = text1[i];
@@ -78,7 +78,7 @@ export class SharedService {
             i +=1;
             continue;
           } else {
-            text1[i] = text1[i].replace("#t", "");
+            text1[i] = text1[i].replace("#t#", "#");
             verse = text1[i].split("#").filter(x => x.length > 0 && x !== " ");
             this.checkError(verse, 3);
             if (title.length > 0) {

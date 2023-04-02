@@ -9,5 +9,6 @@ export class ChapterGhomala {
   //BookName?: string;
   Text? : string;
   Title?: string;
+  Introduction?: string;
   Audio?: string;
 }
