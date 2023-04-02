@@ -29,8 +29,24 @@
 }
 //[ngClass]="currentChapterNumber === item ? 'selectedbtn' : 'btn'"
 .showBookChapter {
+  display: flex;
+  border: none;
+  background-color: transparent;
+  padding: 3px 10px;
   color: brown;
   font-size: large;
+}
+.play {
+  margin-left: 10px;
+  color: black;
+}
+.play:hover {
+  margin-left: 11px;
+  color: brown;
+}
+.pause {
+  margin-left: 11px;
+  color: brown;
 }
 .middle {
   display: flex;

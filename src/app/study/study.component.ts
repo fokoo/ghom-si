@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { VerseGhomala } from '../models/verse-ghomala.model';
+import { ChapterForm } from '../models/chapter-form.model';
+import { ChapterGhomala } from '../models/chapter-ghomala.model';
 //import { Router } from '@angular/router';
-//import { map, Observable, take, tap } from 'rxjs';
 import { Verse } from '../models/verse.model';
 import { ApiService } from '../services/api.service';
 import { LocalService } from '../services/local.service';
@@ -33,12 +33,15 @@ export class StudyComponent implements OnInit {
   bibleVersions!: string[];
   compare!: boolean;
   chapterNumbersOfBook!: number[];
-  chapterGhomala!: VerseGhomala[];
+  chapterGhomala!: ChapterGhomala;
   chapterOther: Verse[] = [];
   chapterNberList!: number[]
   direction: boolean = true;
   defaultVerse = "Aucune traduction de ce Versé disponible";
-  versionGhomala = 1;
+  //versionGhomala = 1;
+  curGhomalaVersion!: string;
+  VersionsGhomala! : string[];
+  paused = true;
 
   constructor(
     private localSevice: LocalService,
@@ -74,17 +77,28 @@ export class StudyComponent implements OnInit {
           this.setVersion(this.currentBibelVersion);
        }
     );
+    this.localSevice.getVersionGhomala().subscribe((data) =>
+    {
+       this.VersionsGhomala = data;
+       this.setVersionGhomala();
+    }
+   );
     this.localSevice.getNumberOfChapterOfBook().subscribe((data) =>
     {
-       this.chapterNberList = data;
+       this.chapterNberList = {...data, };
     }
     );
   }
 
   getCurrentChapter() {
-    this.apiSevice.getChapterGhomalaFb(this.currentBookID+1, this.currentChapterNumber+1, this.versionGhomala).subscribe(
+    this.apiSevice.getChapterGhomalaFb(this.currentBookID+1, this.currentChapterNumber+1, this.curGhomalaVersion).subscribe(
       data => {
-        this.chapterGhomala = data;
+        //const chapterForm: ChapterForm = data;
+        //console.log("data: " + data);
+        const Verses = this.sharedService.versesTextToArray(data.Verses);
+        console.log("verses: " + Verses);
+        this.chapterGhomala = {...data,
+                               Verses: Verses};
       }
     );
     console.log('getCurrentChapter called with bookID: ' + this.currentBookID + ' and version: ' + this.currentBibelVersion);
@@ -228,6 +242,27 @@ export class StudyComponent implements OnInit {
     this.getCurrentChapter();
   }
 
+  private setVersionGhomala(cgv?: string) {
+    if(cgv && cgv !== null){
+      this.curGhomalaVersion = cgv;
+      //this.onBookGhomalaSelect(this.currentBookID, cgv);
+      localStorage.setItem('lastGhomalaVersion_study', cgv);
+    } else {
+      const scgv = localStorage.getItem('lastGhomalaVersion_study');
+      if (scgv && scgv !== null && this.bibleVersions.indexOf(scgv) != -1) {
+        this.curGhomalaVersion = scgv;
+      } else if(this.bibleVersions) {
+        this.curGhomalaVersion = this.VersionsGhomala[0];
+      }
+    }
+  }
+
+  onGhomalaVersionsSelection($event: any) {
+    console.log('version ghomala set is ', $event.value)
+    this.setVersionGhomala($event.value);
+    this.getCurrentChapter();
+  }
+
   onChapterChange(index: number) {
     console.log('onChapterChange', index);
     this.setCurrentChapterNumber(index);
@@ -265,4 +300,10 @@ export class StudyComponent implements OnInit {
     this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
   }
 
+   //todo
+   playAudio() {
+    console.log('Method playAudio() not implemented yet: todo.');
+    this.paused = !this.paused;
+    this.sharedService.playAudio(this.chapterGhomala.Audio, this.paused);
+  }
 }

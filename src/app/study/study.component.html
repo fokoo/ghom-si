@@ -11,6 +11,17 @@
      </mat-select>
    </mat-form-field>
    </div>
+   <div>
+    <mat-form-field>
+     <mat-label>Ghomala-Version</mat-label>
+      <mat-select [(value)]="curGhomalaVersion"
+      (selectionChange)="onGhomalaVersionsSelection($event)">
+        <mat-option *ngFor="let vg of VersionsGhomala" [value]="vg">
+          {{ vg }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
    <div>
      <mat-form-field>
@@ -32,9 +43,14 @@
   </button>
 </div>
 <div class="menu">
-  <p  class="showBookChapter">
-     {{ bookChapterName }}
-  </p>
+  <button class="showBookChapter"  (click)="playAudio()">
+    <p> {{ bookChapterName }} </p>
+    <mat-icon *ngIf="paused" class="play">volume_up</mat-icon>
+    <mat-icon *ngIf="!paused" class="pause">pause_circle_outline</mat-icon>
+  </button>
+
+
+
   <button class="btn-icon" *ngIf="compare" (click)="direction = !direction">
          <span *ngIf="direction">
             <mat-icon class="mat-25">
@@ -50,11 +66,16 @@
   </button>
 </div>
 <div [ngClass]="direction? 'middle row' : 'middle column'">
-  <div [ngClass]="compare && direction? 'text2' : 'text'">
+  <div *ngIf="chapterGhomala" [ngClass]="compare && direction? 'text2' : 'text'">
    <!-- <div  class="verse" *ngFor="let verse of chapterGhomala"> -->
-    <div class="verse" *ngFor="let verse of chapterOther">
-     <p class="verseText">
+    <div class="verse" *ngFor="let verse of chapterGhomala.Verses, let i = index">
+      <h3 *ngIf="verse.Title">{{ verse.Title }}</h3>
+     <p class="verseText" *ngIf="verse.Text">
       <span class="verseID">{{  verse.ID  }}</span>
+      {{ verse.Text }}
+    </p>
+    <p class="verseText" *ngIf="!verse.Text">
+      <span class="verseID">{{  i  }}</span>
       {{ defaultVerse }}
     </p>
    </div>

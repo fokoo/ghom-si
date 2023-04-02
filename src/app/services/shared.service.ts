@@ -60,56 +60,82 @@ export class SharedService {
     return compactText;
   }
 
-  private versesTextToArray(text: string): any[] { //todo
-    // const sep = "#";
-    // let arr: string[] = text.split(sep);
-    // let verses: Verse[] = [];
-    // for(let i = 0; i < arr.length; i++) {
-    //   if(arr[i]) //todo
-    //    verses[i] =  new Verse(i+1, arr[i]);
-    // }
-    // return verses;
-    const test = text.split("#v");
-    const text1 = test.filter(x => x.length > 0 && x !== " ");
+  versesTextToArray(text: string): Verse[] {
+    console.log("text: " + text);
+    text = text.replace("#V","#v");
+    text = text.replace("#T","#t");
+    const text1 = text.split("#v").filter(x => x.length > 0 && x !== " ");
     const text2 = [];
     let verse: string[] = [];
+    let title: string = "";
     let i = 0;
     while (i < text1.length) {
      if (text1[i].includes("#t")) {
-        text1[i] = text1[i].replace("#t", "");
-        if (i === text1.length-1){
-            text2.push({
-              Title: text1[i].trim()
-            });
-            break;
-        }
-        verse = text1[i+1].split("#");
-        text2.push({
-        Title: text1[i].trim(),
-        ID: verse[0].trim(),
-        Text: verse[1].trim()
-        });
-        i +=2;
+          if (i === 0) {
+            text1[i] = text1[i].replace("#t#", "");
+            title = text1[i];
+            this.checkError([title], 1);
+            i +=1;
+            continue;
+          } else {
+            text1[i] = text1[i].replace("#t", "");
+            verse = text1[i].split("#").filter(x => x.length > 0 && x !== " ");
+            this.checkError(verse, 3);
+            if (title.length > 0) {
+              text2.push({
+                Title: title,
+                ID: +verse[0].trim(),
+                Text: verse[1].trim()
+                });
+            } else {
+              text2.push({
+                ID: +verse[0].trim(),
+                Text: verse[1].trim()
+                });
+            }
+            title = verse[2].trim();
+            i +=1;
+          }
      } else {
         verse = text1[i].split("#");
-        text2.push({
-        ID: verse[0].trim(),
-        Text: verse[1].trim()
-       });
-       i +=1;
-     }
+        this.checkError(verse, 2);
+        if (title.length > 0) {
+          text2.push({
+            Title: title,
+            ID: +verse[0].trim(),
+            Text: verse[1].trim()
+            });
+        } else {
+          text2.push({
+            ID: +verse[0].trim(),
+            Text: verse[1].trim()
+            });
+        }
+        title = "";
+        i +=1;
+      }
     }
-    this.checkError(text1[i].trim());
-    this.checkError(verse[0].trim());
-    this.checkError(verse[1].trim());
     console.log(text2);
     return text2;
   }
 
-  checkError(st: string): void {
-     if (st.includes("#")) {
-       this.toast.error( st + "contient une Erreur de syntax")
-     }
+  checkError(sts: string[], len: number): void {
+    if (sts.length !== len) {
+      this.toast.error( sts.join() + " contient une Erreur de syntax")
+    }
+    sts.forEach(element => {
+      if (element.includes("#")) {
+        this.toast.error( element + " contient une Erreur de syntax");
+      }
+    });
   }
+
+     /*  if (i === text1.length-1){
+            text2.push({
+              Title: text1[i].trim()
+            });
+            this.checkError(text1[i].trim());
+            break;
+        } else */
 
 }

@@ -30,8 +30,8 @@ export class EditionComponent implements OnInit, OnDestroy {
   ADD_EDIT = 5;
 
   Shift = '&#10;';
-  VerseSeparation = " \"Verse{Number}#{ Text }\" ";
-  TitleSeparation = " \"Title#{ Text }\" ";
+  VerseSeparation = "#v{Number}#{ Text }";
+  TitleSeparation = "#t{ Text }#";
 
   //mainForm!: UntypedFormGroup;
   //VersesFormArray!: UntypedFormArray;
@@ -142,11 +142,13 @@ export class EditionComponent implements OnInit, OnDestroy {
       data => {
         if (edit !== null && 1 === +edit)
         {
+          console.log('getCurrentChapter 1. check');
            //this.initLocale(JSON.parse(edit!));
            this.initLocale(true);
         }
         else
         {
+           console.log('getCurrentChapter 2. check');
            this.chapterGhomala = data? data : new ChapterForm();
         }
         //this.saveChapterGhomala = this.chapterGhomala;
@@ -253,7 +255,7 @@ export class EditionComponent implements OnInit, OnDestroy {
     if(cgv && cgv !== null){
       this.curGhomalaVersion = cgv;
       //this.onBookGhomalaSelect(this.currentBookID, cgv);
-      localStorage.setItem('lastVersion', cgv);
+      localStorage.setItem('lastGhomalaVersion', cgv);
     } else {
       const scgv = localStorage.getItem('lastGhomalaVersion');
       if (scgv && scgv !== null && this.bibleVersions.indexOf(scgv) != -1) {
