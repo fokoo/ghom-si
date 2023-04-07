@@ -76,21 +76,25 @@
       {{  chapterGhomala.Introduction  }}
     </p>
    </div>
-    <div class="verse" *ngFor="let verse of chapterGhomala.Verses, let i = index">
+    <div class="verse" *ngFor="let verse of chapterGhomala.Verses, let i = index"
+         (click)="saveVerse(i+1, '&#10;')">
       <h3 *ngIf="verse.Title">{{ verse.Title }}</h3>
      <p class="verseText" *ngIf="verse.Text">
       <span class="verseID">{{  verse.ID  }}</span>
       {{ verse.Text }}
     </p>
-    <p class="verseText" *ngIf="!verse.Text">
+    <p [ngClass]= "clickedVerses.indexOf(i+1) === -1? 'verseText' : 'verseText1'"
+     *ngIf="!verse.Text">
       <span class="verseID">{{  i  }}</span>
       {{ defaultVerse }}
     </p>
    </div>
  </div>
   <div  *ngIf="compare === true" [ngClass]="direction? 'b-left' : 'b-top'">
-      <div class="verse" *ngFor="let verse of chapterOther">
-        <p class="verseText">
+      <div class="verse" *ngFor="let verse of chapterOther, let i = index"
+      (click)="saveVerse(i+1, '&#10;')">
+        <p [ngClass]= "clickedVerses.indexOf(i+1) !== -1?
+                         'verseText1' : 'verseText'">
           <span class="verseID">{{ verse.ID }}</span>
           {{ verse.Text }}
         </p>
@@ -106,14 +110,26 @@
 
 </div> -->
 
-<!-- <div class="menu-bottom">
+<div class="menu-bottom">
     <button mat-raised-button (click)="previous()">
       <mat-icon>navigate_before</mat-icon>
     </button>
     <button mat-raised-button (click)="next()">
       <mat-icon>navigate_next</mat-icon>
     </button>
-</div> -->
+</div>
+
+<div class="bottom">
+  <label>
+    <button mat-raised-button (click)="showSavedVersesFt()">
+    <span> Versés Savegarder </span>
+    <mat-icon  *ngIf="showSavedVerses" style="color: coral;">close</mat-icon>
+    </button>
+   </label>
+    <textarea matInput *ngIf="showSavedVerses" [(ngModel)]="savedVerses"
+    (ngModelChange)="savedVersesFt()" cdkTextareaAutosize cdkAutosizeMinRows="2">
+    </textarea>
+</div>
 
 
 <!-- *ngFor="let testamentName of bookNames$ | async  let i = index;" -->

@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 /* import {  FormControl,
           UntypedFormGroup,
           NonNullableFormBuilder } from '@angular/forms'; */
-import { ActivatedRoute } from '@angular/router';
-import { ChapterGhomala } from '../models/chapter-ghomala.model';
+//import { ActivatedRoute } from '@angular/router';
+//import { ChapterGhomala } from '../models/chapter-ghomala.model';
 import { ChapterForm } from '../models/chapter-form.model';
 import { Verse } from '../models/verse.model';
 import { ApiService } from '../services/api.service';
@@ -130,23 +130,12 @@ getCurrentChapter() {
        this.openDialog();
     }
     this.spinner.show();
-    //const edit = localStorage.getItem('editMode');
-    //this.spinner.show();
     this.apiSevice.getChapterGhomalaFb(this.currentBookID+1, this.currentChapterNumber+1, this.curGhomalaVersion).subscribe(
       data => {
-     /*    if (edit !== null && 1 === +edit)
-        {
-          console.log('getCurrentChapter 1. check');
-           //this.initLocale(JSON.parse(edit!));
-           this.initLocale(true);
-        } */
-       // else
-        //{
-           console.log('getCurrentChapter 2. check');
-           console.log(data);
-           //this.chapterGhomala = new ChapterForm();
-           this.chapterGhomala = (data === undefined || data === null) ? new ChapterForm() : data;
-       // }
+        console.log('getCurrentChapter 1. check');
+        console.log(data);
+        //this.chapterGhomala = new ChapterForm();
+        this.chapterGhomala = (data === undefined || data === null) ? new ChapterForm() : data;
         //this.saveChapterGhomala = this.chapterGhomala;
         this.initForm(this.chapterGhomala);
         this.spinner.hide();
@@ -184,7 +173,7 @@ getCurrentChapter() {
 
   setCurrentBookID(cbn?: number) {
     if (cbn !== undefined) {
-      if (cbn >= this.BOOK_LENGTH  || cbn < this.FIRST_BOOK_NUMBER) {
+      if (cbn >= this.BOOK_LENGTH || cbn < this.FIRST_BOOK_NUMBER) {
         cbn = this.FIRST_BOOK_NUMBER;
         this.currentBookID = cbn;//(this.currentBookID === undefined)? cbn : this.currentBookID;
         this.setCurrentChapterNumber(this.FIRST_CHAPTER_ID);
@@ -193,7 +182,7 @@ getCurrentChapter() {
         return;
       } else {
         this.currentBookID = cbn;
-        this.setCurrentChapterNumber();
+        this.setCurrentChapterNumber(this.FIRST_CHAPTER_ID);
         localStorage.setItem('lastBookID', cbn.toString());
         console.log("set setCurrentBookID called 1: " + cbn);
         return;
@@ -380,8 +369,7 @@ getCurrentChapter() {
       this.onNewKeyboardWords(this.IntroductionText, -1);
     } */
   }
-  updateVerses(){
-  }
+  updateVerses(){}
 
   addVerse(shift: string) {
     if (this.VersesCompactText) {
@@ -478,14 +466,36 @@ getCurrentChapter() {
     this.edit();
     this.getCurrentChapter();
   }
+  resetPreviewWork() {
+    const edit = localStorage.getItem('editMode');
+    if (edit !== null && 1 === +edit)
+    {
+       console.log('getCurrentChapter 1. check');
+           //this.initLocale(JSON.parse(edit!));
+       this.initLocale(true);
+    }
+ }
 
   initLocale (editMode: boolean): void {
     console.log("initLocale(..) called!");
     if (editMode === true) {
-      this.chapterGhomala = JSON.parse(localStorage.getItem('chapterGhomala')!);
-      this.isEditMode = editMode;
-      localStorage.removeItem("chapterGhomala");
-      localStorage.removeItem("isEditMode");
+      const _chapterGhomala = JSON.parse(localStorage.getItem('chapterGhomala')!);
+      const _bookID = localStorage.getItem('lastBookID');
+      const _chapNber = localStorage.getItem('lastChapNber');
+      const _version = localStorage.getItem('lastVersion');
+      if (_bookID !== undefined && _bookID !== null &&
+          _chapNber !== undefined && _chapNber !== null &&
+          _version !== undefined && _version !== null &&
+          _chapterGhomala !== undefined && _chapterGhomala !== null) {
+            this.currentBookID = +_bookID;
+            this.currentChapterNumber = +_chapNber;
+            this.currentBibelVersion = _version;
+            this.chapterGhomala = _chapterGhomala;
+            this.isEditMode = editMode;
+            this.clearChapterSaved();
+      } else {
+        return;
+      }
     }
   }
 
@@ -506,15 +516,18 @@ getCurrentChapter() {
     console.log('next() called, this.currentChapterNumber: ' + this.currentChapterNumber);
     console.log('next() called, this.currentBookName: ' + this.currentBookName);
     if (this.chapterNumbersOfBook.indexOf(this.currentChapterNumber+1) === -1) {
+       console.log('next() called, 1. check ');
         console.log('currentChapterNumber has problem: ' + this.currentChapterNumber );
         return;
     }
-    if (this.chapterNumbersOfBook.length <= this.currentChapterNumber +1) {
-      this.setCurrentBookID(this.currentBookID+1);
+    if (this.chapterNumbersOfBook.length <= this.currentChapterNumber + 1) {
+      console.log('next() called, 2. check ');
+      this.setCurrentBookID(this.currentBookID + 1);
       this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
       this.getCurrentChapter();
       return;
     }
+    console.log('next() called, 3. check ');
     this.setCurrentChapterNumber(this.currentChapterNumber + 1);
     this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
     this.getCurrentChapter();
@@ -547,10 +560,17 @@ getCurrentChapter() {
       localStorage.setItem('lastBookID', this.currentBookID.toString());
       localStorage.setItem('lastChapNber', this.currentChapterNumber.toString());
       localStorage.setItem('lastVersion', this.currentBibelVersion.toString());
-    } else {
-      localStorage.removeItem("chapterGhomala");
-      localStorage.removeItem("isEditMode");
     }
+    // else {
+    //  localStorage.clear();
+    //}
   }
+   clearChapterSaved(): void {
+    localStorage.removeItem("chapterGhomala");
+    localStorage.removeItem("isEditMode");
+    localStorage.removeItem('lastBookID');
+    localStorage.removeItem('lastChapNber');
+    localStorage.removeItem('lastVersion');
+   }
 
 }

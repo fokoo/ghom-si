@@ -20,6 +20,7 @@ export class StudyComponent implements OnInit {
   FIRST_BOOK_NUMBER = 0;
   FIRST_CHAPTER_ID = 0;
   HIGHER_CHAPTER_ID = 150;
+  Shift = '&#10;';
 
   bookNames!: any[][];
   //bookNames$!: Observable<any>;
@@ -42,6 +43,11 @@ export class StudyComponent implements OnInit {
   curGhomalaVersion!: string;
   VersionsGhomala! : string[];
   paused = true;
+  showSavedVerses = false;
+  savedVerses?: string;
+  vClass = 0;
+  clickedVerses: number[] = [];
+
 
   constructor(
     private localSevice: LocalService,
@@ -136,13 +142,13 @@ export class StudyComponent implements OnInit {
         this.currentBookID = cbn;//(this.currentBookID === undefined)? cbn : this.currentBookID;
         this.setCurrentChapterNumber(this.FIRST_CHAPTER_ID);
         localStorage.setItem('lastBookID_study', cbn.toString());
-        console.log("set setCurrentBookID called 0: " + cbn);
+        //console.log("set setCurrentBookID called 0: " + cbn);
         return;
       } else {
         this.currentBookID = cbn;
-        this.setCurrentChapterNumber();
+        this.setCurrentChapterNumber(this.FIRST_CHAPTER_ID);
         localStorage.setItem('lastBookID_study', cbn.toString());
-        console.log("set setCurrentBookID called 1: " + cbn);
+        //console.log("set setCurrentBookID called 1: " + cbn);
         return;
       }
     }
@@ -150,11 +156,11 @@ export class StudyComponent implements OnInit {
     if (bn && bn !== null) {
       this.currentBookID = +bn;
       this.setCurrentChapterNumber();
-      console.log("set setCurrentBookID called 2: " + bn);
+      //console.log("set setCurrentBookID called 2: " + bn);
     } else {
       this.currentBookID = this.FIRST_BOOK_NUMBER;
       this.setCurrentChapterNumber();
-      console.log("set setCurrentBookID called 3: " + this.FIRST_BOOK_NUMBER);
+      //console.log("set setCurrentBookID called 3: " + this.FIRST_BOOK_NUMBER);
     }
   }
 
@@ -219,6 +225,7 @@ export class StudyComponent implements OnInit {
     }  else {
       this.bookChapterName = this.bookNames[0][0].split('(').at(0) + " " + 1;
     }
+    this.initClickedVerses();
     return this.bookChapterName;
   }
 
@@ -274,34 +281,101 @@ export class StudyComponent implements OnInit {
     this.getCurrentChapter();
   }
 
+/*   onAddingVerseChange(val: any) {
+    console.log("Changed", val)
+  } */
+
+  showSavedVersesFt() {
+     this.showSavedVerses = !this.showSavedVerses;
+     if (this.savedVerses === undefined) {
+       const sv = localStorage.getItem('savedVerses');
+       if (sv && sv !== null) {
+        this.savedVerses = sv;
+        //console.log("savedVerses: " + sv);
+       }
+     }
+  }
+
+  initClickedVerses() {
+    console.log("this.clickedVerses called");
+    const sv = localStorage.getItem('savedVerses');
+    console.log("verses-0: " + sv);
+    if (sv && sv !== null) {
+      this.savedVerses = sv;
+      this.clickedVerses = [];
+      const sva = this.savedVerses.split(",");
+      console.log("sva: " + sva);
+      sva.forEach(x => {
+            const ar = x.split(" : ");
+            const bcn = this.bookChapterName?.split(" ").filter(x => x.length > 0 && x !== " ");
+            console.log("bcn: " + bcn);
+            if (bcn && ar[0].trim().includes(bcn[0].trim())
+               && ar[0].trim().includes(bcn[1].trim())) {
+              this.clickedVerses.push(+ar[1].trim());
+            }
+      });
+      console.log("verses-1: " + this.clickedVerses);
+    } else {
+      this.clickedVerses = [];
+      console.log("verses-2: " + this.clickedVerses);
+    }
+  }
+
+  saveVerse(i: number, shift: string) {
+    if (this.vClass !== i){
+      this.vClass = i
+      return;
+    }
+    const nv = this.bookChapterName + " : " + i;
+    this.clickedVerses.push(i);
+    if (this.savedVerses === undefined) {
+      this.savedVerses = nv + ", " + shift;
+      this.savedVersesFt();
+      return;
+    }
+    if (this.savedVerses.includes(nv) || this.savedVerses.split("," + shift).includes(nv)) {
+      return;
+    }
+    this.savedVerses += nv + ", " + shift;
+    this.savedVersesFt();
+  }
+
+  savedVersesFt() {
+    if (this.savedVerses !== undefined) {
+      localStorage.setItem('savedVerses', this.savedVerses.toString());
+      console.log("savedVerses: " + this.savedVerses);
+    }
+  }
+
   next() {
-    if (this.chapterNumbersOfBook.indexOf(this.currentChapterNumber) === -1) {
+    if (this.chapterNumbersOfBook.indexOf(this.currentChapterNumber+1) === -1) {
         return;
     }
-    if (this.chapterNumbersOfBook.length < this.currentChapterNumber + 1) {
+    if (this.chapterNumbersOfBook.length <= this.currentChapterNumber + 1) {
       this.setCurrentBookID(this.currentBookID+1);
-      this.getCurrentChapter();
       this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
+      this.getCurrentChapter();
       return;
     }
     this.setCurrentChapterNumber(this.currentChapterNumber + 1);
-    this.getCurrentChapter();
     this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
+    this.getCurrentChapter();
   }
 
   previous() {
-    if (this.currentBookID <= 0 && this.currentChapterNumber == 1) {
+    if (this.currentBookID < this.FIRST_BOOK_NUMBER
+         || this.currentChapterNumber < this.FIRST_CHAPTER_ID) {
       return;
     }
-    if (this.currentChapterNumber - 1 < 1) {
+    if (this.currentChapterNumber - 1 < this.FIRST_CHAPTER_ID) {
       this.setCurrentBookID(this.currentBookID-1);
-      this.getCurrentChapter();
       this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
+      this.getCurrentChapter();
       return;
     }
     this.setCurrentChapterNumber(this.currentChapterNumber - 1);
-    this.getCurrentChapter();
     this.bookNameAndNumber(this.currentBookName, this.currentChapterNumber);
+    this.getCurrentChapter();
   }
 
    //todo

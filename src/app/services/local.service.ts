@@ -1,10 +1,10 @@
 //import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import * as jsonBook from '../../assets/bible/books.json';
-import * as jsonBibleKjv from '../../assets/bible/kjv.json';
-import * as jsonBibleS21 from '../../assets/bible/s21.json';
-import * as jsonBibleLsg from '../../assets/bible/lsg.json';
+//import * as jsonBook from '../../assets/bible/books.json';
+//import * as jsonBibleKjv from '../../assets/bible/kjv.json';
+//import * as jsonBibleS21 from '../../assets/bible/s21.json';
+//import * as jsonBibleLsg from '../../assets/bible/lsg.json';
 import { environment } from "src/environments/environment";
 import { Data } from "../data/data";
 import { LSG } from "../data/lsg";
@@ -29,7 +29,7 @@ export class LocalService {
 ]); */
 
 // data: any = Object.entries(jsonBook);
-data?: any = jsonBook;
+//data?: any = jsonBook;
 numbersOfChapterOfBook!: number;
 //private URL = '../assets/bible/data.json';
 
@@ -76,10 +76,10 @@ numbersOfChapterOfBook!: number;
             { Title: '', ID:i+1, Text: chapterList[currentChapterNumber][i] } );
       }
       return of(chapter) ;
-   /*  } else if (version == Data.versions[3]) {
-      testaments = SEMEUR.bible;
+    } else if (version == Data.versions[3]) {
+       testaments = SEMEUR.bible.Testaments;
     } else if (version == Data.versions[4]) {
-      testaments = MARTIN.bible; */
+       testaments = MARTIN.bible.Testaments;
     } else {
       testaments = LSG.bible.Testaments;
     }

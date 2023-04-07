@@ -94,6 +94,14 @@
   margin: 10px 4%;
   padding: 15px 0%;
 }
+.menu2 {
+  display: flex;
+  //flex-wrap: wrap;
+  flex-direction:row;
+  justify-content: space-between;
+  margin: 10px 4%;
+  padding: 15px 0%;
+}
 .menu-bottom {
   display: flex;
   flex-direction:row;
@@ -116,26 +124,47 @@
   margin-left: 11px;
   color: brown;
 }
-mat-card {
-  //background-color: gainsboro;
-}
 textarea {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
 }
-@media screen and (max-width: 600px) {
+
+@media screen and (max-width: 800px) {
   .menu-top {
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
     margin: 5px 4%;
   }
+  .menu2 {
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 4%;
+    padding: 15px 0%;
+    button {
+      margin: 5px;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
   .menu {
     flex-wrap: wrap;
     flex-direction:row;
     justify-content: space-between;
     margin: 10px 4%;
+  }
+  .menu2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 10px 4%;
+    padding: 15px 0%;
+    button {
+      margin: 3px;
+    }
   }
   .btn {
     margin: 1px;
@@ -153,5 +182,7 @@ textarea {
     font-size: large
   }
 }
+
+
 
 

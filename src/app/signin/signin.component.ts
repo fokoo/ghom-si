@@ -3,7 +3,7 @@ import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { HotToastService } from "@ngneat/hot-toast";
-import { catchError, of, tap } from 'rxjs';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-signin',
@@ -28,7 +28,7 @@ export class SigninComponent implements OnInit {
 
   private email(username: string): string {
     console.log('email method called and returned: ' + username + '@ghomala.com' );
-    return username + '@ghomala.com';
+    return username.trim().toLowerCase() + '@ghomala.com';
   }
 
   get username() {
@@ -98,7 +98,7 @@ export class SigninComponent implements OnInit {
     ).subscribe();
   }
 
-  private success() {
+/*   private success() {
     console.log('Success method called');
     sessionStorage.setItem('user', "login");
     this.router.navigate(['traduire']);
@@ -113,7 +113,7 @@ export class SigninComponent implements OnInit {
     console.error('Echec de l\'enregistrement');
     this.toast.error('Echec de l\'enregistrement: '+ saved);
   }
-
+ */
 }
 
 
