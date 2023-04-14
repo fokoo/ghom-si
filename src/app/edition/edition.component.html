@@ -168,11 +168,20 @@
         <mat-icon>edit</mat-icon>
       </button>
     </mat-card-actions>
+
+    <mat-card-actions>
+      <button mat-raised-button (click)="resetPreviewWork()">
+         Reset Preview
+         <mat-icon>restore</mat-icon>
+      </button>
+    </mat-card-actions>
+
     <mat-card-actions *ngIf="isEditMode">
       <button mat-stroked-button color="primary"  (click)="addVerse('&#10;')">
          New Verse
       </button>
     </mat-card-actions>
+
     <mat-card-actions *ngIf="isEditMode">
      <button  mat-stroked-button color="primary"  (click)="addTitle('&#10;')">
          New Title
@@ -212,14 +221,11 @@
       <mat-icon>edit</mat-icon>
      </button>
   </button> -->
-  <button mat-raised-button (click)="resetPreviewWork()">
-    Reset Preview
-    <mat-icon>restore</mat-icon>
-  </button>
+
 
   <button mat-raised-button>
-    Upload File
-    <mat-icon>attach_file</mat-icon>
+    Record voice
+    <mat-icon>record_voice_over</mat-icon>
   </button>
   <button mat-raised-button>
     Upload Audio
@@ -238,4 +244,35 @@
   <button mat-raised-button (click)="next()">
     <mat-icon>navigate_next</mat-icon>
   </button>
+</div>
+
+
+<div class="form-group">
+  <h5 for="recorder">Upload Audio</h5>
+  <input type="file"  (change)="detectFiles($event)"
+         class="form-control "accept="audio/*" capture id="recorder">
+<!--          <audio id="player" controls></audio>-->
+  <small >Click here to upload audio</small>
+  <p class="text-success" *ngIf="uploaded">Audio Uploaded !</p>
+</div>
+<div class="col-md-offset-4">
+  <button class="btn btn-warning mt-2 mb-2" [disabled]="disabledOpenRecord" (click)="onOpenRecord()"> SForm.Record</button>
+</div>
+<div  *ngIf="addPrononciation && !uploaded" class="row container btn-light">
+  <div class="btn-toolbar">
+    <button type="button"  id="record" class="btn   btn-success mr-2" [disabled]="record"
+            (click)="onRecord($event)">Start</button>
+    <button type="button"  id="stopRecord" class="btn  col-md-offset-2 btn-danger" [disabled]="stopRecord"
+            (click)="onStop($event)">Stop</button>
+  </div>
+  <audio id="recordedAudio" controls></audio>
+
+  <div class="btn-toolbar">
+    <button type="button" id="SaveRecord" class="btn   btn-info mr-2"
+            [disabled]="deleteOrSaveRecord"
+            (click)="saveRecord()">Save</button>
+    <button type="button" id="deleteRecord" class="btn btn-warning"
+            [disabled]="deleteOrSaveRecord"
+            (click)="onDelete()">Delete</button>
+  </div>
 </div>

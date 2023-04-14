@@ -33,9 +33,9 @@ export class SharedService {
       this.aud.src! = links;
       console.log('Playing');
       this.aud.play();
-      // this.paused[id]=!this.paused[id];
     } else {
       this.aud.pause();
+      console.log('Paused');
     }
   }
 

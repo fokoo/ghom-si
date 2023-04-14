@@ -33,6 +33,22 @@ export class EditionComponent implements OnInit, OnDestroy {
   VerseSeparation = "#v{Number}#{ Text }";
   TitleSeparation = "#t{ Text }#";
 
+  urlAudio: string = "";
+  typFile: string = "audios/";
+  fileIsUploading = false;
+  uploaded: boolean = false;
+  audioUploaded: boolean = false;
+  disabledOpenRecord = false;
+  record = false;
+  stopRecord = true;
+  addPrononciation = false;
+  deleteOrSaveRecord = true;
+
+  private audioChunks?: any[];
+  private rec?: MediaRecorder;
+  private blob?: any;
+  private showAudio = false;
+
   //mainForm!: UntypedFormGroup;
   //VersesFormArray!: UntypedFormArray;
   //VerseForm!: UntypedFormGroup;
@@ -397,7 +413,7 @@ getCurrentChapter() {
       Verses: this.VersesCompactText,
       BookID: this.currentBookID+1,
       ChapterID: this.currentChapterNumber+1,
-      Audio: "audio-link"
+      Audio: this.urlAudio
     }
     this.apiSevice.addChapterFormFb(chapterForm, this.curGhomalaVersion).pipe(
       this.toast.observe({
@@ -409,7 +425,8 @@ getCurrentChapter() {
   }
 
   onSubmitForm(){
-    this.saveChapter();
+    //this.saveChapter();
+    this.openDialog();
     this.edit();
   }
 
@@ -457,7 +474,7 @@ getCurrentChapter() {
 
   compareBtn() {
     this.compare = !this.compare;
-    this.getCurrentChapter();  // todo to getcurrentchapter and replace by re-init chapterGhomala,
+    //this.getCurrentChapter();  // todo to getcurrentchapter and replace by re-init chapterGhomala,
                                //while taking the changes under consideration
   }
 
@@ -466,6 +483,7 @@ getCurrentChapter() {
     this.edit();
     this.getCurrentChapter();
   }
+
   resetPreviewWork() {
     const edit = localStorage.getItem('editMode');
     if (edit !== null && 1 === +edit)
@@ -479,6 +497,7 @@ getCurrentChapter() {
   initLocale (editMode: boolean): void {
     console.log("initLocale(..) called!");
     if (editMode === true) {
+      this.isEditMode = editMode;
       const _chapterGhomala = JSON.parse(localStorage.getItem('chapterGhomala')!);
       const _bookID = localStorage.getItem('lastBookID');
       const _chapNber = localStorage.getItem('lastChapNber');
@@ -506,11 +525,6 @@ getCurrentChapter() {
     this.sharedService.playAudio(this.chapterGhomala.Audio, this.paused);
   }
 
-  //todo
-  downloadAudio () {
-    this.chapterGhomala.Audio = "audio"; //todo
-    //this.apiSevice.updateChapterGhomalaFb(this.chapterGhomala, this.curGhomalaVersion);
-  }
 
   next() {
     console.log('next() called, this.currentChapterNumber: ' + this.currentChapterNumber);
@@ -572,5 +586,101 @@ getCurrentChapter() {
     localStorage.removeItem('lastChapNber');
     localStorage.removeItem('lastVersion');
    }
+
+
+     //todo
+  uploadAudio (file: File) {
+    this.chapterGhomala.Audio = "audio"; //todo
+    //this.apiSevice.updateChapterGhomalaFb(this.chapterGhomala, this.curGhomalaVersion);
+    this.fileIsUploading = true;
+    this.apiSevice.uploadAudio(file, this.typFile, this.curGhomalaVersion,
+      this.currentBookID, this.currentChapterNumber).then(
+      (url: string) => {
+        this.urlAudio = url;
+        this.fileIsUploading = false;
+        this.audioUploaded = true;
+
+        //this.formData.set(this.typFile, file);
+        // console.log('fileType :' + typ);
+        // console.log('formData.get(typ) is ' + this.formData.get(typ));
+      }
+    );
+  }
+
+  detectFiles($event: any) {
+    this.uploadAudio($event.target.file);
+  }
+
+  onOpenRecord(){
+    this.showAudio = true;
+    this.addPrononciation = !this.addPrononciation;
+    if (this.addPrononciation) {
+      navigator.mediaDevices.getUserMedia({audio: true})
+        .then(stream => {
+          this.handlerFunction(stream);
+        });
+    }
+  }
+
+  private handlerFunction(stream: MediaStream) {
+    this.rec = new MediaRecorder(stream);
+    this.rec.ondataavailable = e => {
+      this.audioChunks?.push(e.data);
+      if (this.rec?.state === 'inactive'){
+        this.blob = new Blob(this.audioChunks, {type: 'audio/wav'});
+        const recordedAudio = document.getElementById('recordedAudio') as HTMLAudioElement;
+        if (recordedAudio !== null) {
+          recordedAudio.src = URL.createObjectURL(this.blob);
+          recordedAudio.controls = true;
+          recordedAudio.autoplay = true;
+        }
+      }
+    };
+  }
+
+
+  onRecord($event: any) {
+      console.log('record was clicked');
+      this.record = true;
+      this.stopRecord = false;
+      $event.target.style.backgroundColor = 'blue';
+      this.audioChunks = [];
+      this.rec?.start();
+  }
+
+  onStop($event: any) {
+    console.log('stop was clicked');
+    this.record = false;
+    this.stopRecord = true;
+    // if(this.blob) {
+    this.deleteOrSaveRecord = false;
+    // }
+    $event.target.style.backgroundColor = 'red';
+    this.rec?.stop();
+  }
+
+  onDelete() {
+    console.log('delete was clicked');
+    this.record = false;
+    if (!this.stopRecord){
+      this.stopRecord = true;
+      this.rec?.stop();
+    }
+    this.deleteOrSaveRecord = true;
+    this.audioChunks = [];
+    this.blob = null;
+  }
+
+  saveRecord() {
+    this.record = true;
+    if (!this.stopRecord){
+      this.stopRecord = true;
+      this.rec?.stop();
+    }
+    this.disabledOpenRecord = true;
+    this.deleteOrSaveRecord = true;
+    console.log('save was clicked');
+    this.uploadAudio(this.blob);
+  }
 
 }

@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 //import { TranslateService } from '@ngx-translate/core';
 import {Router} from "@angular/router";
-import { Observable } from 'rxjs';
-import { User } from '../models/user.model';
+//import { Observable } from 'rxjs';
+//import { User } from '../models/user.model';
 import { ApiService } from '../services/api.service';
 import { SharedService } from '../services/shared.service';
 // import {AuthService} from "../../services/auth/auth.service";
@@ -15,7 +15,6 @@ import { SharedService } from '../services/shared.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-
 
   constructor(
     //private translate: TranslateService,

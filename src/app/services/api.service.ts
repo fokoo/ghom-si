@@ -9,6 +9,7 @@ import {
 import { deleteDoc, doc, docData, Firestore, setDoc, updateDoc } from '@angular/fire/firestore';
 import { ChapterGhomala } from '../models/chapter-ghomala.model';
 import { ChapterForm } from '../models/chapter-form.model';
+import firebase from 'firebase/compat/app';
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +64,7 @@ private chapter (bookID: number) : any[] {   // temporary until method done
  getChapterGhomala(bookID: number, chapterID: number, version: number): Observable<any> {
   console.log("getChapterGhomalaFb called");
   return of(this.chapter(bookID));
-} 
+}
 
 getChapterGhomalaFb(bookID: number, chapterID: number, version: string): Observable<any> {
   console.log("getChapterGhomalaFb called");
@@ -133,4 +134,30 @@ deleteUserFb(chapterDB_UID: string, version: number): Observable<void> {
    return from(deleteDoc(ref));
 }
 
+
+
+uploadAudio(file: File, typefile: string,  ghVersion: string,
+  bookID: number, chapterID: number): Promise<string> {
+  return new Promise(
+    (resolve, reject) => {
+      const almostUniqueFileName = ghVersion + "Book_" + bookID + "_Chapter_" + chapterID;
+      const storageRef = firebase.storage().ref();
+      //const upload = storageRef.child(typefile + almostUniqueFileName + file.name).put(file);
+      const upload = storageRef.child(typefile + almostUniqueFileName).put(file);
+      console.log(file.name);
+      upload.on(firebase.storage.TaskEvent.STATE_CHANGED,
+        () => {
+          console.log('Loading…');
+        },
+        (error) => {
+          console.log('Loading Error! : ' + error.message);
+          reject();
+        },
+        () => {
+          resolve(upload.snapshot.ref.getDownloadURL());
+        }
+      );
+    }
+  );
+}
 }

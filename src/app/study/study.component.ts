@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ChapterForm } from '../models/chapter-form.model';
+//import { ChapterForm } from '../models/chapter-form.model';
 import { ChapterGhomala } from '../models/chapter-ghomala.model';
 //import { Router } from '@angular/router';
 import { Verse } from '../models/verse.model';
