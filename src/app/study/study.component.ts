@@ -381,7 +381,7 @@ export class StudyComponent implements OnInit {
    //todo
    playAudio() {
     console.log('Method playAudio() not implemented yet: todo.');
-    this.paused = !this.paused;
     this.sharedService.playAudio(this.chapterGhomala.Audio, this.paused);
+    this.paused = !this.paused;
   }
 }

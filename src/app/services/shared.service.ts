@@ -29,16 +29,17 @@ export class SharedService {
   }
 
   playAudio(links?: string, paused?: boolean): void {
-    if (paused && links){
+    if (links && paused === true) {
       this.aud.src! = links;
       console.log('Playing');
       this.aud.play();
-    } else {
+    }
+    else if (links && paused === false) {
+      this.aud.src! = links;
       this.aud.pause();
       console.log('Paused');
     }
   }
-
 /*   private chapter () : any[] {
     const len = Math.floor(Math.random() * 150) + 1;
     let verses = [];

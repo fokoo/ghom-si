@@ -33,22 +33,25 @@ export class EditionComponent implements OnInit, OnDestroy {
   VerseSeparation = "#v{Number}#{ Text }";
   TitleSeparation = "#t{ Text }#";
 
-  urlAudio: string = "";
-  typFile: string = "audios/";
-  fileIsUploading = false;
-  uploaded: boolean = false;
-  audioUploaded: boolean = false;
+  private urlAudio: string = "";
+  private typFile: string = "audios/";
+  //private fileIsUploading = false;
+  //audioUploaded: boolean = false;
   disabledOpenRecord = false;
   record = false;
   stopRecord = true;
   addPrononciation = false;
   deleteOrSaveRecord = true;
-
   private audioChunks?: any[];
   private rec?: MediaRecorder;
   private blob?: any;
-  private showAudio = false;
-
+  showAudioDiv = false;
+  showRecordDiv = false;
+  private uploadedFile?: File;
+  uploadedTexts: string[] = [];
+  audURL: string = "";
+  paused = true;
+  //aud = new Audio ();
   //mainForm!: UntypedFormGroup;
   //VersesFormArray!: UntypedFormArray;
   //VerseForm!: UntypedFormGroup;
@@ -88,9 +91,10 @@ export class EditionComponent implements OnInit, OnDestroy {
   saveChapterGhomala!: ChapterForm;
   VersionsGhomala! : string[];
   curGhomalaVersion! : string;
-  paused = true;
   //showProgress!: boolean;
   confirmDialog!: number;
+
+
 
   constructor(
     //private nonNullableFormBuilder: NonNullableFormBuilder,
@@ -369,7 +373,6 @@ getCurrentChapter() {
     this.isEditMode = !this.isEditMode;
   }
 
-
   initForm(chapterForm?: ChapterForm) {
     console.log("initForm() called");
     if (chapterForm) {
@@ -401,7 +404,6 @@ getCurrentChapter() {
     this.VersesCompactText += shift;
     this.VersesCompactText += this.TitleSeparation;
   }
-
 
   //todo confirmation before saving
   private saveChapter() {
@@ -518,13 +520,11 @@ getCurrentChapter() {
     }
   }
 
-  //todo
   playAudio() {
     console.log('Method playAudio() not implemented yet: todo.');
-    this.paused = !this.paused;
     this.sharedService.playAudio(this.chapterGhomala.Audio, this.paused);
+    this.paused = !this.paused;
   }
-
 
   next() {
     console.log('next() called, this.currentChapterNumber: ' + this.currentChapterNumber);
@@ -592,14 +592,15 @@ getCurrentChapter() {
   uploadAudio (file: File) {
     this.chapterGhomala.Audio = "audio"; //todo
     //this.apiSevice.updateChapterGhomalaFb(this.chapterGhomala, this.curGhomalaVersion);
-    this.fileIsUploading = true;
+    //this.fileIsUploading = true;
     this.apiSevice.uploadAudio(file, this.typFile, this.curGhomalaVersion,
       this.currentBookID, this.currentChapterNumber).then(
       (url: string) => {
         this.urlAudio = url;
-        this.fileIsUploading = false;
-        this.audioUploaded = true;
-
+        //this.fileIsUploading = false;
+        //this.audioUploaded = true;
+        this.uploadedFile = undefined;
+        this.uploadedTexts =  [];
         //this.formData.set(this.typFile, file);
         // console.log('fileType :' + typ);
         // console.log('formData.get(typ) is ' + this.formData.get(typ));
@@ -608,18 +609,63 @@ getCurrentChapter() {
   }
 
   detectFiles($event: any) {
-    this.uploadAudio($event.target.file);
+    this.uploadedFile =  $event.target.files[0];
+    console.log("uploaded file: " + $event);
+    if (this.uploadedFile) {
+      this.uploadedTexts = [];
+      this.uploadedTexts.push('File name : ' + this.uploadedFile.name );
+      this.uploadedTexts.push('File Type : ' + this.uploadedFile.type);
+      this.uploadedTexts.push('File Size : ' +  this.uploadedFile.size);
+      this.audURL = URL.createObjectURL(this.uploadedFile);
+      document?.querySelector('.aud')?.setAttribute('src', this.audURL);
+    }
   }
 
-  onOpenRecord(){
-    this.showAudio = true;
-    this.addPrononciation = !this.addPrononciation;
-    if (this.addPrononciation) {
-      navigator.mediaDevices.getUserMedia({audio: true})
+  sendAudio() {
+    if (this.uploadedFile && this.uploadedFile !== null) {
+       this.uploadAudio(this.uploadedFile);
+    }
+  }
+  cancelAudio() {
+     this.uploadedFile !== null;
+     this.uploadedTexts =  [];
+  }
+
+  openAudio() {
+    this.showAudioDiv = !this.showAudioDiv;
+    if (this.showAudioDiv === true) {
+       this.showRecordDiv = false;
+       this.uploadedTexts = [];
+    }
+    //console.log("audio: " + this.showAudioDiv);
+    //console.log("record: " + this.showRecordDiv);
+  }
+
+  private onOpenRecord() {
+    this.record = false;
+    navigator.mediaDevices.getUserMedia({audio: true})
         .then(stream => {
           this.handlerFunction(stream);
-        });
+    });
+  }
+  private onCloseRecord() {
+    this.record = true;
+    navigator.mediaDevices.getUserMedia({audio: true})
+        .then(stream => {
+          stream.getTracks()[0].stop();
+    });
+  }
+
+  openRecord() {
+    this.showRecordDiv = !this.showRecordDiv;
+    if (this.showRecordDiv === true) {
+       this.showAudioDiv = false;
+       this.onOpenRecord();
+    } else {
+       this.onCloseRecord();
     }
+    //console.log("audio: " + this.showAudioDiv);
+    //console.log("record: " + this.showRecordDiv);
   }
 
   private handlerFunction(stream: MediaStream) {
@@ -638,13 +684,12 @@ getCurrentChapter() {
     };
   }
 
-
   onRecord($event: any) {
       console.log('record was clicked');
       this.record = true;
       this.stopRecord = false;
-      $event.target.style.backgroundColor = 'blue';
-      this.audioChunks = [];
+      //$event.target.style.backgroundColor = 'orange';
+      this.clearAudio();
       this.rec?.start();
   }
 
@@ -655,7 +700,7 @@ getCurrentChapter() {
     // if(this.blob) {
     this.deleteOrSaveRecord = false;
     // }
-    $event.target.style.backgroundColor = 'red';
+    //$event.target.style.backgroundColor = 'yellow';
     this.rec?.stop();
   }
 
@@ -666,6 +711,10 @@ getCurrentChapter() {
       this.stopRecord = true;
       this.rec?.stop();
     }
+    this.clearAudio();
+  }
+
+  private clearAudio () {
     this.deleteOrSaveRecord = true;
     this.audioChunks = [];
     this.blob = null;
@@ -677,10 +726,9 @@ getCurrentChapter() {
       this.stopRecord = true;
       this.rec?.stop();
     }
-    this.disabledOpenRecord = true;
+    //this.disabledOpenRecord = true;
     this.deleteOrSaveRecord = true;
     console.log('save was clicked');
     this.uploadAudio(this.blob);
   }
-
 }

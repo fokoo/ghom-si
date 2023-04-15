@@ -135,7 +135,7 @@ deleteUserFb(chapterDB_UID: string, version: number): Observable<void> {
 }
 
 
-
+// todo: if audio available, it must be replaced with new audio file
 uploadAudio(file: File, typefile: string,  ghVersion: string,
   bookID: number, chapterID: number): Promise<string> {
   return new Promise(
@@ -144,6 +144,7 @@ uploadAudio(file: File, typefile: string,  ghVersion: string,
       const storageRef = firebase.storage().ref();
       //const upload = storageRef.child(typefile + almostUniqueFileName + file.name).put(file);
       const upload = storageRef.child(typefile + almostUniqueFileName).put(file);
+      console.log(typefile + almostUniqueFileName);
       console.log(file.name);
       upload.on(firebase.storage.TaskEvent.STATE_CHANGED,
         () => {

@@ -129,7 +129,47 @@ textarea {
   height: 100%;
   box-sizing: border-box;
 }
-
+.audio-group {
+  margin: auto;
+  width: 60%;
+  border: 0.5px solid #f56e07;
+  padding: 10px;
+}
+.btns {
+  display: flex;
+  flex-direction:row;
+  justify-content:space-between;
+  margin-top: 10px;
+  button {
+    width: 45%;
+    height: 50px;
+  }
+}
+.center {
+  //margin: auto;
+  //width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  audio {
+    margin: 10px auto;
+  }
+}
+.btn-label {
+  padding: 2px;
+  border: 1px solid gray;
+  background-color:#c5dfec;
+  border-radius: 5px;
+  font: inherit;
+}
+.btn-label:hover {
+  padding: 2px;
+  border: 1px solid gray;
+  background-color:#c5dfec;
+  border-radius: 6px;
+  font-size: larger;
+}
 @media screen and (max-width: 800px) {
   .menu-top {
     flex-wrap: wrap;
@@ -180,6 +220,12 @@ textarea {
     color: maroon;
     border: none;
     font-size: large
+  }
+  .audio-group {
+    margin: auto;
+    width: 90%;
+    border: 0.5px solid #f56e07;
+    padding: 10px;
   }
 }
 
