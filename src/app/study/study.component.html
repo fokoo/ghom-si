@@ -79,12 +79,12 @@
     <div class="verse" *ngFor="let verse of chapterGhomala.Verses, let i = index"
          (click)="saveVerse(i+1, '&#10;')">
       <h3 *ngIf="verse.Title">{{ verse.Title }}</h3>
-     <p class="verseText" *ngIf="verse.Text">
+     <p [ngClass]= "clickedVerses.indexOf(i+1) !== -1?'verseText1' : 'verseText'"
+     *ngIf="verse.Text">
       <span class="verseID">{{  verse.ID  }}</span>
       {{ verse.Text }}
     </p>
-    <p [ngClass]= "clickedVerses.indexOf(i+1) === -1? 'verseText' : 'verseText1'"
-     *ngIf="!verse.Text">
+    <p *ngIf="!verse.Text">
       <span class="verseID">{{  i  }}</span>
       {{ defaultVerse }}
     </p>

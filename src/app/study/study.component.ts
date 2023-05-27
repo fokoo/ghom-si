@@ -32,7 +32,7 @@ export class StudyComponent implements OnInit {
   bookChapterName!: string;
   //bibleVersions$!: Observable<any>;
   bibleVersions!: string[];
-  compare: boolean = false;
+  compare: boolean = true;
   chapterNumbersOfBook!: number[];
   chapterGhomala!: ChapterGhomala;
   chapterOther: Verse[] = [];

@@ -94,7 +94,7 @@ export class EditionComponent implements OnInit, OnDestroy {
   //showProgress!: boolean;
   confirmDialog!: number;
 
-
+  urlHref!: string;
 
   constructor(
     //private nonNullableFormBuilder: NonNullableFormBuilder,
@@ -159,7 +159,7 @@ getCurrentChapter() {
         //this.saveChapterGhomala = this.chapterGhomala;
         this.initForm(this.chapterGhomala);
         this.spinner.hide();
-
+        this.downloadJsonString();
       }
     );
     console.log('getCurrentChapter called with bookID: ' + this.currentBookID + ' and version: ' + this.currentBibelVersion);
@@ -731,4 +731,29 @@ getCurrentChapter() {
     console.log('save was clicked');
     this.uploadAudio(this.blob);
   }
+
+  downloadJsonString() {
+    //const a = document.getElementById("d-csv");
+    // dCSV = URL.createObjectURL(new Blob(["No data yet"], { type: "text/plain" } ));
+    //dfile = "ghomsi.txt"
+    //const a = $event. (click)="downloadCSV($event)"
+    const blob = new Blob([this.toJsonString(this.chapterGhomala)]);
+    this.urlHref = URL.createObjectURL(blob);
+    // window.location.href = URL.createObjectURL(blob);
+  }
+
+  toText(chapterGhomala: ChapterForm): BlobPart {
+     return "Title: " + chapterGhomala.Title + ",\n" +
+      "Introduction:" + chapterGhomala.Introduction + ",\n" +
+      "BookID:" + chapterGhomala.BookID  + ",\n" +
+      "ChapterID:" + chapterGhomala.ChapterID  + ",\n" +
+      "Audio:" + chapterGhomala.Audio  + ",\n" +
+      "Verses:" + chapterGhomala.Verses
+  }
+   toJsonString(chapterGhomala: ChapterForm): string {
+     return JSON.stringify(chapterGhomala);
+   }
+
+
+
 }
